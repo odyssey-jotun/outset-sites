@@ -41,19 +41,20 @@ for (const file of await walk(DIST)) {
   if (ext === '.html') {
     // href="/x", src="/x", srcset="/x …", data-src="/x". Protocol-relative
     // "//" and already-prefixed paths are left alone.
-    text = text.replace(/\b(href|src|srcset|data-src|poster)="\/(?!\/)/g, (_, a) => `${a}="${BASE}/`);
+    // Astro islands name their scripts in component-url and renderer-url.
+    text = text.replace(/\b(href|src|srcset|data-src|poster|component-url|renderer-url)="\/(?!\/)/g, (_, a) => `${a}="${BASE}/`);
     // Later candidates in a srcset list.
     text = text.replace(/,\s*\/(?=_astro\/)/g, `, ${BASE}/`);
     // Root-relative URLs inside island props, which hydrate the phone menu.
     text = text.replace(/(&quot;href&quot;:\[0,&quot;)\/(?!\/)/g, `$1${BASE}/`);
-    // Inline style backgrounds.
-    text = text.replace(/url\(\/(?!\/)/g, `url(${BASE}/`);
+    // Inline styles, including the @font-face rules Astro writes into <head>.
+    text = text.replace(/url\((['"]?)\/(?!\/)/g, `url($1${BASE}/`);
     // The preview is not the site.
     if (!/name="robots"/.test(text)) {
       text = text.replace('</head>', '<meta name="robots" content="noindex, nofollow" />\n</head>');
     }
   } else if (ext === '.css') {
-    text = text.replace(/url\(\/(?!\/)/g, `url(${BASE}/`);
+    text = text.replace(/url\((['"]?)\/(?!\/)/g, `url($1${BASE}/`);
   } else if (ext === '.js') {
     text = text.replace(/(["'`])\/api\//g, `$1${BASE}/api/`);
   } else if (ext === '.txt' && path.basename(file) === 'robots.txt') {
