@@ -1,12 +1,14 @@
 name: Preview on GitHub Pages
 
-# A look-only copy of the site at https://odyssey-jotun.github.io/outset-sites/
-# Every page is marked noindex, so it never competes with outsetsites.com.
-# The real deploy is deploy.yml; this exists so the site can be seen before
-# Cloudflare is connected.
+# Look-only copies of the site, every page noindex, so they never compete
+# with outsetsites.com:
+#   https://odyssey-jotun.github.io/outset-sites/          the `main` branch
+#   https://odyssey-jotun.github.io/outset-sites/modern/   the `modern` branch
+# The real deploy is deploy.yml; this exists so designs can be compared
+# before Cloudflare is connected.
 on:
   push:
-    branches: [main]
+    branches: [main, modern]
   workflow_dispatch:
 
 permissions:
@@ -22,17 +24,49 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: node scripts/build-preview.mjs /outset-sites
+
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+      - name: Build main
+        working-directory: main
+        env:
+          PREVIEW_NOTE: "You are looking at the current design.|/outset-sites/modern/|See the modern concept"
+        run: |
+          npm ci
+          npm run build
+          node scripts/build-preview.mjs /outset-sites
+          mkdir -p ../site
+          cp -R dist/. ../site/
+
+      # The modern branch is optional: the preview still publishes when it
+      # does not exist.
+      - name: Check out modern
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: modern
+          path: modern
+      - name: Build modern
+        if: hashFiles('modern/package.json') != ''
+        working-directory: modern
+        env:
+          PREVIEW_NOTE: "You are looking at the modern concept.|/outset-sites/|See the current design"
+        run: |
+          npm ci
+          npm run build
+          node scripts/build-preview.mjs /outset-sites/modern
+          mkdir -p ../site/modern
+          cp -R dist/. ../site/modern/
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build

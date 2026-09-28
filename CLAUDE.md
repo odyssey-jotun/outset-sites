@@ -38,7 +38,7 @@ The normal flow for a new post:
 4. Set `draft: false`, commit, push to `main`.
 5. Confirm the page actually loads at its real URL and tell him the address.
 
-A look-only copy of `main` is published at https://odyssey-jotun.github.io/outset-sites/ by `preview.yml`, noindex, with no contact form behind it. That is where Marc looks at changes until Cloudflare is connected.
+Two look-only copies are published by `preview.yml`, both noindex with no contact form behind them: `main` (the faithful clone of the old design) at https://odyssey-jotun.github.io/outset-sites/ and the `modern` branch (the redesign concept, same copy) at https://odyssey-jotun.github.io/outset-sites/modern/. Marc has not chosen between them. Keep the copy identical on both; a copy change goes to both branches.
 
 ## Conventions a post has to follow
 
@@ -100,7 +100,7 @@ If a title is too long, shorten the title. Never widen the limit to make a build
 
 - Brand colours are design tokens in `src/styles/global.css`: blue `--color-brand-*`, slate `--color-slate-*`, the off-white `--color-surface`. Use them.
 - The button system is `src/components/ui/Button.astro` with `src/lib/button-styles.ts`.
-- The typeface is Lato, self-hosted through the `fonts` block in `astro.config.mjs`. Real weights only: 400 and 700.
+- On `main` the typeface is Lato; on `modern` it is Bricolage Grotesque for headings and Inter for text. Both are self-hosted through the `fonts` block in `astro.config.mjs`. Real weights only.
 - Line icons are in `Icon.astro`. The illustrated icons on the homepage are PNGs in `src/assets/brand/`.
 
 Look for the thing before making another one.
