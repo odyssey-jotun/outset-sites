@@ -1,40 +1,46 @@
 ---
 import { Image } from 'astro:assets';
 import { NAV } from '../../lib/nav';
-import { SITE_NAME } from '../../lib/site';
+import { SITE_NAME, CONTACT_HREF } from '../../lib/site';
 import MobileNav from '../islands/MobileNav';
+import Button from '../ui/Button.astro';
 import logo from '../../assets/brand/logo.png';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) =>
   href.startsWith('/#') ? false : path === href || (href !== '/' && path.startsWith(href));
+const links = NAV.filter((item) => item.href !== CONTACT_HREF);
 ---
 <!--
-  No backdrop-filter here: it would make the header a containing block for
-  position:fixed descendants, which collapses the mobile menu panel to the
-  height of the header itself.
+  No backdrop-filter on the header itself: it would make it a containing
+  block for position:fixed descendants, which collapses the phone menu panel
+  to the height of the header.
 -->
-<header class="sticky top-0 z-40 border-b border-hairline bg-paper" style="--header-h:80px">
-  <div class="container-page flex h-[80px] items-center justify-between gap-6">
+<header class="sticky top-0 z-40 border-b border-hairline/80 bg-paper/95" style="--header-h:76px">
+  <div class="container-page flex h-[76px] items-center justify-between gap-6">
     <a href="/" class="flex shrink-0 items-center gap-3 no-underline" aria-label={`${SITE_NAME}, home`}>
-      <Image src={logo} alt="" width={48} height={48} densities={[1, 2]} loading="eager" class="h-12 w-12" />
-      <span class="hidden text-lg font-bold tracking-tight text-slate-500 sm:inline">Outset Sites</span>
+      <Image src={logo} alt="" width={40} height={40} densities={[1, 2]} loading="eager" class="h-10 w-10" />
+      <span class="font-display text-[1.2rem] font-bold tracking-tight text-ink">Outset</span>
     </a>
 
-    <nav class="hidden items-center gap-1 md:flex" aria-label="Main">
-      {NAV.map((item) => (
+    <nav class="hidden items-center gap-1 rounded-full border border-hairline bg-surface/70 p-1 md:flex" aria-label="Main">
+      {links.map((item) => (
         <a
           href={item.href}
           aria-current={isActive(item.href) ? 'page' : undefined}
           class:list={[
-            'relative rounded-md px-3.5 py-2 text-[1.02rem] font-bold no-underline transition-colors',
-            isActive(item.href) ? 'text-brand-600' : 'text-slate-500 hover:text-brand-600',
+            'rounded-full px-4 py-1.5 text-[0.95rem] font-semibold no-underline transition-colors',
+            isActive(item.href) ? 'bg-paper text-ink shadow-[var(--shadow-sm)]' : 'text-ink-soft hover:text-ink',
           ]}
         >
           {item.label}
         </a>
       ))}
     </nav>
+
+    <div class="hidden md:block">
+      <Button href={CONTACT_HREF}>Get in touch</Button>
+    </div>
 
     <MobileNav client:media="(max-width: 767px)" nav={NAV} />
   </div>

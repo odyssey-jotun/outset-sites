@@ -6,7 +6,8 @@ import Icon from '../components/ui/Icon.astro';
 import FAQ from '../components/ui/FAQ.astro';
 import FAQItem from '../components/ui/FAQItem.astro';
 import ContactForm from '../components/islands/ContactForm';
-import { TAGLINE } from '../lib/site';
+import { TAGLINE, CONTACT_HREF } from '../lib/site';
+import { SHOWCASE } from '../lib/showcase';
 
 import deviceMockup from '../assets/brand/device-mockup.png';
 import frustratedOwner from '../assets/brand/frustrated-owner.png';
@@ -14,13 +15,24 @@ import galleryWindow from '../assets/brand/gallery-window.png';
 import showingClient from '../assets/brand/showing-client.png';
 import joe from '../assets/brand/joe-green.png';
 import marc from '../assets/brand/marc-gray.png';
-import paperPlane from '../assets/brand/paper-plane.png';
 import iconCalendar from '../assets/brand/icon-calendar.png';
 import iconBuild from '../assets/brand/icon-build.png';
 import iconGrowth from '../assets/brand/icon-growth.png';
 import iconFrontend from '../assets/brand/icon-frontend.png';
 import iconHosting from '../assets/brand/icon-hosting.png';
 import iconSeo from '../assets/brand/icon-seo.png';
+
+/*
+ * Every word of copy on this page is the copy from the existing site. The
+ * concept changes how it is arranged and dressed, not what it says.
+ */
+
+// Three numbers the copy already commits to, given somewhere to land.
+const proof = [
+  { value: '48 hrs', label: 'One of us gets back to you within 48 hours' },
+  { value: '2 to 4 wks', label: 'Most small business websites, once we have what we need' },
+  { value: '60 days', label: 'Data-driven strategies built to show measurable traffic growth' },
+];
 
 const process = [
   { icon: iconCalendar, alt: 'Icon of a calendar', title: 'Schedule a call with us',
@@ -38,6 +50,13 @@ const services = [
     body: 'Fast, secure, and always online. We give your site a home and manage the tech so you don’t have to!' },
   { icon: iconSeo, alt: 'Icon of a magnifying glass and rising bar graph', title: 'SEO Strategy & Blogging',
     body: 'Expand your reach and client base by showing up in Google search with our proven SEO and blogging strategies.' },
+];
+
+const team = [
+  { photo: joe, name: 'Joe Green', role: 'Technical architect',
+    bio: 'Joe Green is the technical architect behind each Outset site. With a background in IT and years of experience managing web projects, Joe ensures every site runs fast, looks clean, and captures customers, not eyesores.' },
+  { photo: marc, name: 'Marc Gray', role: 'Brand, copy and SEO',
+    bio: 'Marc Gray has led a successful small business consulting firm since 2019. He focuses on your brand continuity, web copy, and SEO strategy, ensuring your website not only looks good but also performs.' },
 ];
 
 /*
@@ -67,79 +86,121 @@ const faq = [
   { question: 'How do I know I won’t pay for a bunch of things I don’t need?',
     answer: 'We build what your business actually needs to convert customers. That usually means clear messaging, a clean layout, and the right pages to answer customer questions. Many agencies upsell features that look impressive but do nothing to increase sales. We keep the scope focused and explain the purpose of each piece. If a feature does not help you win customers, it does not belong in the build.' },
 ];
+
+const stills = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/showcase/*.{png,jpg,jpeg,webp}',
+  { eager: true }
+);
+const teaser = SHOWCASE.slice(0, 4).map((item) => ({ ...item, still: stills[`/src/assets/showcase/${item.image}`]!.default }));
 ---
 <BaseLayout
   title="Small Business Web Design | Outset Sites"
   description="Outset Web Design builds websites that give small businesses customers, not headaches: custom sites, hosting and maintenance, and SEO strategy and blogging, at a price that earns more than it costs."
   faq={faq}
 >
-  <!-- Hero: white, with the old theme's blue glow and device mockup in the
-       bottom right corner. The mockup is a background so the headline and
-       button can sit over its glow on a phone without fighting it. -->
-  <section class="hero relative overflow-hidden border-b border-hairline">
-    <div class="container-page relative grid items-center gap-10 py-16 lg:grid-cols-[1.1fr_1fr] lg:py-24">
+  <!-- Hero -->
+  <section class="glow-band border-b border-hairline bg-paper">
+    <div class="container-page grid items-center gap-12 py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:py-28">
       <div>
-        <h1 class="max-w-2xl text-4xl leading-[1.1] text-slate-500 lg:text-5xl">
+        <p class="eyebrow">Web design for small businesses</p>
+        <h1 class="mt-6 max-w-[14ch] text-4xl font-extrabold leading-[1.02] tracking-[-0.03em] text-ink sm:text-5xl lg:text-[3.6rem]">
           {TAGLINE}
         </h1>
-        <div class="mt-10">
-          <Button href="/portfolio/" size="lg">
-            Check Out our Work <Icon name="chevron-right" size={18} />
-          </Button>
+        <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink-soft">
+          Custom sites, hosting and maintenance, and SEO strategy and blogging, from a small business web team for small business owners.
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <Button href="/portfolio/" size="lg">Check Out our Work <Icon name="arrow-right" size={18} /></Button>
+          <Button href={CONTACT_HREF} size="lg" variant="ghost">Get in touch</Button>
+        </div>
+        <ul class="mt-9 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-muted">
+          {['Front end web development', 'Hosting & site maintenance', 'SEO strategy & blogging'].map((s) => (
+            <li class="inline-flex items-center gap-2"><Icon name="check" size={15} class="text-brand-500" />{s}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="relative mx-auto w-full max-w-lg lg:max-w-none">
+        <!-- The mockup sits in a window frame, so it reads as a product and
+             not as clip art floating in space. -->
+        <div class="overflow-hidden rounded-[24px] border border-hairline bg-paper shadow-[var(--shadow-glow)]">
+          <div class="flex items-center gap-1.5 border-b border-hairline bg-surface px-4 py-2.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-hairline-strong"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-hairline-strong"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-hairline-strong"></span>
+            <span class="ml-3 h-5 flex-1 rounded-md bg-paper text-[0.7rem] leading-5 text-muted" aria-hidden="true">&nbsp;outsetsites.com</span>
+          </div>
+          <div class="bg-gradient-to-br from-brand-50 via-paper to-brand-100 p-6">
+            <Image
+              src={deviceMockup}
+              alt="A laptop, desktop monitor and tablet each showing a website Outset built"
+              widths={[400, 600, 800]}
+              sizes="(max-width: 64rem) min(100vw - 3rem, 32rem), 34rem"
+              loading="eager"
+              fetchpriority="high"
+              class="h-auto w-full"
+            />
+          </div>
         </div>
       </div>
-      <div class="hero__art relative mx-auto w-full max-w-md lg:max-w-none">
-        <Image
-          src={deviceMockup}
-          alt="A laptop, desktop monitor and tablet each showing a website Outset built"
-          widths={[400, 600, 800]}
-          sizes="(max-width: 64rem) min(100vw - 3rem, 28rem), 34rem"
-          loading="eager"
-          fetchpriority="high"
-          class="h-auto w-full"
-        />
-      </div>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section class="border-b border-hairline bg-paper">
+    <div class="container-page grid gap-8 py-10 sm:grid-cols-3 sm:gap-10 lg:py-12">
+      {proof.map((p) => (
+        <div class="border-l-2 border-brand-200 pl-5">
+          <p class="font-display text-[2.4rem] font-extrabold leading-none tracking-[-0.03em] text-ink">{p.value}</p>
+          <p class="mt-2 text-[0.95rem] leading-snug text-ink-soft">{p.label}</p>
+        </div>
+      ))}
     </div>
   </section>
 
   <!-- The problem, from the owner's side -->
   <section class="bg-surface">
-    <div class="container-page grid items-center gap-10 py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:py-24">
+    <div class="container-page grid items-center gap-12 py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:py-28">
       <div>
-        <h2 class="section-heading">You Deserve a Website That Works as Hard as You Do</h2>
+        <p class="eyebrow">The problem</p>
+        <h2 class="section-heading mt-5">You Deserve a Website That Works as Hard as You Do</h2>
         <p class="mt-6 text-lg leading-relaxed text-ink-soft">
           Most small business owners know they need a website, but feel trapped between overpriced
           developers and DIY tools that never quite deliver. You’re running a business, not a tech
           company. You shouldn’t have to spend nights wondering why your competitors are getting
           clients while your phone stays quiet.
         </p>
-        <p class="mt-8 text-center text-lg font-bold text-ink lg:text-left">We get it. We’ve been there!</p>
+        <p class="mt-8 font-display text-2xl font-bold tracking-tight text-ink">We get it. We’ve been there!</p>
       </div>
-      <Image
-        src={frustratedOwner}
-        alt="A business owner at a laptop, head in her hands, staring past the screen"
-        widths={[400, 559]}
-        sizes="(max-width: 64rem) calc(100vw - 3rem), 28rem"
-        loading="lazy"
-        class="photo mx-auto h-auto w-full max-w-md"
-      />
+      <div class="relative mx-auto w-full max-w-md">
+        <div class="absolute -right-4 -top-4 hidden h-full w-full rounded-[24px] bg-brand-100 lg:block" aria-hidden="true"></div>
+        <Image
+          src={frustratedOwner}
+          alt="A business owner at a laptop, head in her hands, staring past the screen"
+          widths={[400, 559]}
+          sizes="(max-width: 64rem) calc(100vw - 3rem), 28rem"
+          loading="lazy"
+          class="photo relative h-auto w-full"
+        />
+      </div>
     </div>
   </section>
 
   <!-- The real problem -->
-  <section class="bg-brand-600 text-white">
-    <div class="container-page grid items-center gap-10 py-16 lg:grid-cols-[1fr_1.3fr] lg:gap-16 lg:py-24">
+  <section class="band-texture bg-navy text-white">
+    <div class="container-page grid items-center gap-12 py-20 lg:grid-cols-[1fr_1.2fr] lg:gap-20 lg:py-28">
       <Image
         src={galleryWindow}
         alt="A man on the street looking in through a gallery window at a party he is not part of"
         widths={[400, 559]}
         sizes="(max-width: 64rem) calc(100vw - 3rem), 24rem"
         loading="lazy"
-        class="photo mx-auto h-auto w-full max-w-md lg:order-first"
+        class="photo mx-auto h-auto w-full max-w-md"
       />
       <div>
-        <h2 class="section-heading text-white">The Real Problem Most Businesses Face</h2>
-        <div class="mt-6 space-y-5 text-lg leading-relaxed">
+        <p class="eyebrow eyebrow-dark">Why nothing sticks</p>
+        <h2 class="section-heading mt-5 text-white">The Real Problem Most Businesses Face</h2>
+        <div class="mt-6 space-y-5 text-lg leading-relaxed text-brand-100">
           <p>
             When your business doesn’t have a website, potential customers can’t find you, even
             when they’re searching for what you sell. You might post on social media, pay for ads,
@@ -156,13 +217,16 @@ const faq = [
     </div>
   </section>
 
-  <!-- The solution -->
+  <!-- The solution and the services, as one grid -->
   <section class="bg-paper">
-    <div class="container-page py-16 lg:py-24">
-      <div class="surface-card grid items-center gap-10 p-8 shadow-[var(--shadow-lg)] lg:grid-cols-[1.2fr_1fr] lg:gap-14 lg:p-14">
-        <div>
-          <h2 class="section-heading">The Solution to Your Marketing: a Reliable Website that gets you Customers</h2>
-          <div class="mt-6 space-y-5 text-lg leading-relaxed text-ink-soft">
+    <div class="container-page py-20 lg:py-28">
+      <div class="max-w-2xl">
+        <p class="eyebrow">The solution</p>
+        <h2 class="section-heading mt-5">A Reliable Website that gets you Customers</h2>
+      </div>
+      <div class="mt-12 grid gap-5 lg:grid-cols-3">
+        <div class="surface-card grid gap-8 p-8 lg:col-span-3 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:p-12">
+          <div class="space-y-5 text-lg leading-relaxed text-ink-soft">
             <p>
               At Outset Web Services, every small business deserves a legitimate online presence,
               one that earns more than it costs. A good website doesn’t drain your time or wallet.
@@ -173,125 +237,151 @@ const faq = [
               When your website is built right, your investment keeps paying you back.
             </p>
           </div>
+          <Image
+            src={showingClient}
+            alt="Two people at a table showing a client a website on a laptop"
+            widths={[400, 640, 960]}
+            sizes="(max-width: 64rem) calc(100vw - 6rem), 24rem"
+            loading="lazy"
+            class="photo mx-auto h-auto w-full max-w-sm"
+          />
         </div>
-        <Image
-          src={showingClient}
-          alt="Two people at a table showing a client a website on a laptop"
-          widths={[400, 640, 960]}
-          sizes="(max-width: 64rem) calc(100vw - 6rem), 26rem"
-          loading="lazy"
-          class="photo mx-auto h-auto w-full max-w-md"
-        />
+        {services.map((s) => (
+          <div class="surface-card surface-card-interactive p-8">
+            <Image src={s.icon} alt={s.alt} width={120} height={120} loading="lazy" class="h-[120px] w-[120px]" />
+            <h3 class="mt-6 text-xl">{s.title}</h3>
+            <p class="mt-3 leading-relaxed text-ink-soft">{s.body}</p>
+          </div>
+        ))}
       </div>
-    </div>
-  </section>
-
-  <!-- The team -->
-  <section class="bg-brand-600 text-white">
-    <div class="container-page py-16 lg:py-24">
-      <h2 class="section-heading text-center text-white">A Small Business Web Team for Small Business Owners</h2>
-      <div class="mx-auto mt-8 max-w-4xl space-y-5 text-lg leading-relaxed">
-        <p>
-          As small business owners ourselves, we’ve felt that same frustration. You see advice
-          everywhere: make TikToks, start a YouTube channel, post every day, and pay for ads on all
-          of them. But ads can only take you so far. Once you pay for them, they’re gone. A
-          reliable, updated website puts equity in your company and always works for you.
-        </p>
-        <p>
-          We know the pressure of growing while keeping costs under control. That’s why we build
-          websites that are affordable, strategic, and designed to help your business grow from
-          day one.
-        </p>
-      </div>
-
-      <ul class="mt-12 grid gap-10 md:grid-cols-2 lg:gap-16">
-        <li>
-          <Image
-            src={joe}
-            alt="Joe Green"
-            widths={[400, 640, 800]}
-            sizes="(max-width: 48rem) calc(100vw - 3rem), 34rem"
-            loading="lazy"
-            class="photo h-auto w-full"
-          />
-          <p class="mt-6 text-lg leading-relaxed">
-            <strong>Joe Green</strong> is the technical architect behind each Outset site. With a
-            background in IT and years of experience managing web projects, Joe ensures every site
-            runs fast, looks clean, and captures customers, not eyesores.
-          </p>
-        </li>
-        <li>
-          <Image
-            src={marc}
-            alt="Marc Gray"
-            widths={[400, 640, 800]}
-            sizes="(max-width: 48rem) calc(100vw - 3rem), 34rem"
-            loading="lazy"
-            class="photo h-auto w-full"
-          />
-          <p class="mt-6 text-lg leading-relaxed">
-            <strong>Marc Gray</strong> has led a successful small business consulting firm since
-            2019. He focuses on your brand continuity, web copy, and SEO strategy, ensuring your
-            website not only looks good but also performs.
-          </p>
-        </li>
-      </ul>
-      <p class="mt-12 text-center text-lg">
-        Together, we combine technology and strategy to deliver websites that convert your web traffic into revenue.
-      </p>
     </div>
   </section>
 
   <!-- Process -->
-  <section class="bg-surface">
-    <div class="container-page py-16 lg:py-24">
-      <h2 class="section-heading text-center">Our Process for Your Website</h2>
-      <ol class="mt-12 grid gap-10 md:grid-cols-3">
-        {process.map((step) => (
-          <li class="text-center">
-            <Image src={step.icon} alt={step.alt} width={120} height={120} loading="lazy" class="mx-auto h-[120px] w-[120px]" />
-            <h3 class="mt-6 text-lg font-bold text-slate-500">{step.title}</h3>
-            <p class="mt-2 leading-relaxed text-ink-soft">{step.body}</p>
+  <section class="border-y border-hairline bg-surface">
+    <div class="container-page py-20 lg:py-28">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-2xl">
+          <p class="eyebrow">How it works</p>
+          <h2 class="section-heading mt-5">Our Process for Your Website</h2>
+        </div>
+        <p class="max-w-md text-[1.05rem] leading-relaxed text-ink-soft">
+          Our data-driven strategies are designed to deliver measurable traffic growth within 60
+          days. With full transparency, you’ll see exactly how your investment is working for you!
+        </p>
+      </div>
+      <ol class="mt-14 grid gap-6 md:grid-cols-3">
+        {process.map((step, i) => (
+          <li class="surface-card relative overflow-hidden p-8">
+            <span class="step-number absolute right-6 top-5" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <Image src={step.icon} alt={step.alt} width={88} height={88} loading="lazy" class="h-[88px] w-[88px]" />
+            <h3 class="mt-7 text-xl">{step.title}</h3>
+            <p class="mt-3 leading-relaxed text-ink-soft">{step.body}</p>
           </li>
         ))}
       </ol>
-      <p class="mx-auto mt-12 max-w-4xl border-t border-hairline-strong pt-8 text-center text-lg leading-relaxed text-ink-soft">
-        Our data-driven strategies are designed to deliver measurable traffic growth within 60 days.
-        With full transparency, you’ll see exactly how your investment is working for you!
-      </p>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="bg-paper">
+    <div class="container-page py-20 lg:py-28">
+      <div class="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+        <div>
+          <p class="eyebrow">Who you work with</p>
+          <h2 class="section-heading mt-5">A Small Business Web Team for Small Business Owners</h2>
+          <div class="mt-6 space-y-5 text-lg leading-relaxed text-ink-soft">
+            <p>
+              As small business owners ourselves, we’ve felt that same frustration. You see advice
+              everywhere: make TikToks, start a YouTube channel, post every day, and pay for ads on
+              all of them. But ads can only take you so far. Once you pay for them, they’re gone. A
+              reliable, updated website puts equity in your company and always works for you.
+            </p>
+            <p>
+              We know the pressure of growing while keeping costs under control. That’s why we
+              build websites that are affordable, strategic, and designed to help your business
+              grow from day one.
+            </p>
+            <p class="font-semibold text-ink">
+              Together, we combine technology and strategy to deliver websites that convert your web traffic into revenue.
+            </p>
+          </div>
+        </div>
+        <ul class="grid gap-6 sm:grid-cols-2">
+          {team.map((person) => (
+            <li class="surface-card overflow-hidden">
+              <Image
+                src={person.photo}
+                alt={person.name}
+                widths={[400, 640, 800]}
+                sizes="(max-width: 40rem) calc(100vw - 3rem), 20rem"
+                loading="lazy"
+                class="aspect-square w-full object-cover"
+              />
+              <div class="p-6">
+                <h3 class="text-xl">{person.name}</h3>
+                <p class="mt-1 text-sm font-semibold uppercase tracking-[0.1em] text-brand-600">{person.role}</p>
+                <p class="mt-4 leading-relaxed text-ink-soft">{person.bio}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 
   <!-- Stakes -->
   <section class="bg-paper">
-    <div class="container-page py-16 lg:py-24">
-      <div class="surface-card mx-auto max-w-4xl p-8 shadow-[var(--shadow-lg)] lg:p-14">
-        <h2 class="section-heading">What’s at Stake For Your Site?</h2>
-        <div class="mt-6 space-y-5 text-lg leading-relaxed text-ink-soft">
-          <p>
-            Every day without a website costs you visibility, leads, and trust. Businesses without
-            one waste money on marketing channels that vanish the moment you stop paying. A website,
-            once built right, becomes a lasting engine for growth.
-          </p>
-          <p>
-            When you invest in your site, every effort you put into your marketing lasts. When you
-            don’t, everything fades.
-          </p>
+    <div class="container-page pb-20 lg:pb-28">
+      <div class="glow-band rounded-[28px] bg-navy px-8 py-12 text-white lg:px-16 lg:py-16">
+        <div class="grid gap-8 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
+          <div>
+            <p class="eyebrow eyebrow-dark">What’s at stake</p>
+            <h2 class="section-heading mt-5 text-white">What’s at Stake For Your Site?</h2>
+          </div>
+          <div class="space-y-5 text-lg leading-relaxed text-brand-100">
+            <p>
+              Every day without a website costs you visibility, leads, and trust. Businesses without
+              one waste money on marketing channels that vanish the moment you stop paying. A website,
+              once built right, becomes a lasting engine for growth.
+            </p>
+            <p class="font-semibold text-white">
+              When you invest in your site, every effort you put into your marketing lasts. When you
+              don’t, everything fades.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Services -->
-  <section class="bg-brand-600 text-white">
-    <div class="container-page py-16 lg:py-24">
-      <h2 class="section-heading text-center text-white">Web Dev Services</h2>
-      <ul class="mt-12 grid gap-10 md:grid-cols-3">
-        {services.map((s) => (
-          <li class="text-center">
-            <Image src={s.icon} alt={s.alt} width={200} height={200} loading="lazy" class="mx-auto h-[200px] w-[200px]" />
-            <h3 class="mt-6 text-lg font-bold">{s.title}</h3>
-            <p class="mt-2 leading-relaxed text-brand-50">{s.body}</p>
+  <!-- Showcase teaser -->
+  <section class="border-y border-hairline bg-surface">
+    <div class="container-page py-20 lg:py-28">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="eyebrow">Recent work</p>
+          <h2 class="section-heading mt-5">Sites we have built</h2>
+        </div>
+        <Button href="/portfolio/" variant="ghost">See all {SHOWCASE.length} <Icon name="arrow-right" size={16} /></Button>
+      </div>
+      <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {teaser.map((item) => (
+          <li class="surface-card surface-card-interactive relative overflow-hidden">
+            <Image
+              src={item.still}
+              alt={`Homepage of the ${item.name} website`}
+              widths={[600]}
+              sizes="(max-width: 40rem) calc(100vw - 3rem), 18rem"
+              loading="lazy"
+              class="aspect-[3/2] w-full object-cover object-top"
+            />
+            <div class="p-5">
+              <h3 class="text-lg">
+                <a href="/portfolio/" class="text-ink no-underline after:absolute after:inset-0 hover:text-brand-700">{item.name}</a>
+              </h3>
+              <p class="mt-1 text-sm text-muted">{item.kind}</p>
+            </div>
           </li>
         ))}
       </ul>
@@ -300,58 +390,46 @@ const faq = [
 
   <!-- FAQ -->
   <section class="bg-paper">
-    <div class="container-page py-16 lg:py-24">
-      <h2 class="section-heading text-center">Frequently Asked Questions</h2>
-      <div class="mx-auto mt-4 max-w-5xl">
-        <FAQ>
-          {faq.map((f) => (
-            <FAQItem q={f.question}>
-              {/* The pricing answer is two paragraphs on the old site; the
-                  break is restored here without duplicating the text. */}
-              {f.answer.split(' If you’re just starting out,').map((part, i) => (
-                <p>{i === 0 ? part : `If you’re just starting out,${part}`}</p>
-              ))}
-            </FAQItem>
-          ))}
-        </FAQ>
+    <div class="container-page grid gap-12 py-20 lg:grid-cols-[1fr_1.6fr] lg:gap-20 lg:py-28">
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <p class="eyebrow">Good questions</p>
+        <h2 class="section-heading mt-5">Frequently Asked Questions</h2>
+        <p class="mt-6 text-lg leading-relaxed text-ink-soft">
+          Straight answers on cost, timing, phones, domains and what we need from you.
+        </p>
+        <Button href={CONTACT_HREF} variant="secondary" class="mt-8">Ask us something else</Button>
       </div>
+      <FAQ>
+        {faq.map((f, i) => (
+          <FAQItem q={f.question} n={i + 1}>
+            {f.answer.split(' If you’re just starting out,').map((part, j) => (
+              <p>{j === 0 ? part : `If you’re just starting out,${part}`}</p>
+            ))}
+          </FAQItem>
+        ))}
+      </FAQ>
     </div>
   </section>
 
   <!-- Contact -->
-  <section id="contact" class="scroll-mt-20 bg-brand-600 text-white">
-    <div class="container-page py-16 lg:py-24">
-      <h2 class="section-heading text-center text-white">Get in Touch Today!</h2>
-      <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
-        <div class="text-center">
-          <p class="mx-auto max-w-lg text-lg leading-relaxed">
-            Ready to grow? Drop us a line and one of us will get back to you within 48 hours. No
-            high-pressure sales, just an open, honest look at your needs!
-          </p>
-          <Image
-            src={paperPlane}
-            alt=""
-            widths={[320, 480]}
-            sizes="20rem"
-            loading="lazy"
-            class="mx-auto mt-6 h-auto w-full max-w-[20rem]"
-          />
-        </div>
-        <div>
-          <ContactForm client:visible />
-        </div>
+  <section id="contact" class="band-texture scroll-mt-20 bg-navy text-white">
+    <div class="container-page grid gap-12 py-20 lg:grid-cols-[1fr_1.3fr] lg:gap-20 lg:py-28">
+      <div>
+        <p class="eyebrow eyebrow-dark">Contact</p>
+        <h2 class="section-heading mt-5 text-white">Get in Touch Today!</h2>
+        <p class="mt-6 max-w-md text-lg leading-relaxed text-brand-100">
+          Ready to grow? Drop us a line and one of us will get back to you within 48 hours. No
+          high-pressure sales, just an open, honest look at your needs!
+        </p>
+        <ul class="mt-8 space-y-3 text-[0.98rem] text-brand-100">
+          <li class="flex items-center gap-3"><Icon name="check" size={16} class="text-cyan-300" />A reply within 48 hours</li>
+          <li class="flex items-center gap-3"><Icon name="check" size={16} class="text-cyan-300" />A quote, not a pitch</li>
+          <li class="flex items-center gap-3"><Icon name="check" size={16} class="text-cyan-300" />Most sites live in 2 to 4 weeks</li>
+        </ul>
+      </div>
+      <div class="rounded-[24px] bg-paper p-6 text-ink shadow-[var(--shadow-lg)] sm:p-8 lg:p-10">
+        <ContactForm client:visible />
       </div>
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .hero {
-    /* The old theme's glow: a blue that fades to white well before the
-       middle of the section, so the headline sits on white. */
-    background:
-      radial-gradient(ellipse 60% 85% at 100% 100%, var(--color-brand-400) 0, var(--color-brand-100) 45%, var(--color-paper) 75%);
-    box-shadow: 0 12px 18px -6px rgba(0, 0, 0, 0.18);
-    z-index: 1;
-  }
-</style>

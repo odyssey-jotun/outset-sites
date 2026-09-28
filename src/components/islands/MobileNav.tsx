@@ -30,28 +30,32 @@ export default function MobileNav({ nav }: Props) {
         aria-expanded={open}
         aria-controls="mobile-menu"
         aria-label={open ? 'Close menu' : 'Open menu'}
-        class="-mr-2 inline-flex h-11 w-11 items-center justify-center text-slate-500"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-hairline bg-surface text-ink"
       >
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           {open
             ? <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" />
-            : <><path d="M3 6h18" stroke-linecap="round" /><path d="M3 12h18" stroke-linecap="round" /><path d="M3 18h18" stroke-linecap="round" /></>}
+            : <><path d="M4 7h16" stroke-linecap="round" /><path d="M4 12h16" stroke-linecap="round" /><path d="M4 17h16" stroke-linecap="round" /></>}
         </svg>
       </button>
 
       {open && (
         <div
           id="mobile-menu"
-          class="fixed inset-x-0 bottom-0 top-[var(--header-h,80px)] z-50 overflow-y-auto border-t border-hairline bg-paper"
+          class="fixed inset-x-0 bottom-0 top-[var(--header-h,76px)] z-50 overflow-y-auto bg-paper"
         >
-          <nav class="container-page py-4" aria-label="Mobile">
-            <ul class="divide-y divide-hairline">
-              {nav.map((item) => (
+          <nav class="container-page py-6" aria-label="Mobile">
+            <ul class="flex flex-col gap-2">
+              {nav.map((item, i) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    class="block py-4 text-lg font-bold text-slate-500 no-underline hover:text-brand-600"
+                    class={
+                      i === nav.length - 1
+                        ? 'mt-4 flex items-center justify-center rounded-full bg-brand-600 px-5 py-3.5 text-lg font-semibold text-white no-underline'
+                        : 'flex items-center justify-between rounded-2xl bg-surface px-5 py-4 font-display text-2xl font-bold text-ink no-underline'
+                    }
                   >
                     {item.label}
                   </a>

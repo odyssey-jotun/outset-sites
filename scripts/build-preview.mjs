@@ -15,6 +15,15 @@ import path from 'node:path';
 
 const DIST = path.resolve(import.meta.dirname, '../dist');
 const BASE = (process.argv[2] ?? '').replace(/\/$/, '');
+// PREVIEW_NOTE="Text|/other/path|Link label" adds a switch strip to every page.
+const NOTE = (() => {
+  const raw = process.env.PREVIEW_NOTE;
+  if (!raw) return '';
+  const [text, href, label] = raw.split('|');
+  const esc = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  return `<div style="position:fixed;left:0;right:0;bottom:0;z-index:9999;display:flex;justify-content:center;gap:1rem;align-items:center;padding:0.6rem 1rem;background:#0F1E2E;color:#fff;font:600 14px system-ui,sans-serif;box-shadow:0 -2px 12px rgba(0,0,0,.25)">` +
+    `<span>${esc(text)}</span><a href="${esc(href)}" style="color:#fff;text-decoration:underline">${esc(label)}</a></div>`;
+})();
 if (!BASE.startsWith('/')) {
   console.error('Usage: node scripts/build-preview.mjs /sub-path');
   process.exit(1);
@@ -53,6 +62,9 @@ for (const file of await walk(DIST)) {
     if (!/name="robots"/.test(text)) {
       text = text.replace('</head>', '<meta name="robots" content="noindex, nofollow" />\n</head>');
     }
+    // An optional strip naming which design this is and linking to the
+    // other one, so the two previews can be flipped between.
+    if (NOTE) text = text.replace('</body>', `${NOTE}\n</body>`);
   } else if (ext === '.css') {
     text = text.replace(/url\((['"]?)\/(?!\/)/g, `url($1${BASE}/`);
   } else if (ext === '.js') {

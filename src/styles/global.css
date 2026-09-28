@@ -1,61 +1,65 @@
 @import "tailwindcss";
 
 /*
- * Outset's identity is a mid blue (#4480B1), a dark slate (#37495C) and a
- * warm off-white (#EDEDEA), all lifted from the WordPress theme. The blue is
- * kept as the decorative brand colour and deepened one step wherever it has
- * to carry white text: #4480B1 under white sits at 4.2:1, just under WCAG
- * AA, so the bands use #386D9A (5.5:1) and links on paper use #2F5F88 (6.8:1).
- * The slate carries buttons and the darkest text. There is no second accent:
- * a button is always slate, a band is always blue, so each means one thing.
+ * The modern concept. Outset's blue is kept as the one accent and pushed
+ * brighter (#2F7BD3), set against a deep navy (#0E1B2A) that replaces the
+ * old slate for dark bands and buttons. Bricolage Grotesque carries the
+ * headlines; Inter carries everything else. Where blue has to carry white
+ * text it steps down to #2566B3 (5.7:1), and body copy on the navy uses the
+ * pale tint rather than pure white so it does not glare.
  */
 @theme {
-  --color-ink: #1F2A36;
-  --color-ink-soft: #37495C;
-  --color-muted: #566678;
-  --color-hairline: #DDE3E8;
-  --color-hairline-strong: #C6D0DA;
+  --color-ink: #0E1B2A;
+  --color-ink-soft: #33475B;
+  --color-muted: #5B6B7B;
+  --color-hairline: #E3E9EF;
+  --color-hairline-strong: #CBD6E0;
   --color-paper: #FFFFFF;
-  --color-surface: #EDEDEA;
-  --color-surface-2: #E2E5E6;
-  --color-footer: #0A0A0A;
+  --color-surface: #F4F7FA;
+  --color-surface-2: #E9EFF5;
+  --color-navy: #0E1B2A;
+  --color-navy-soft: #16283C;
+  --color-footer: #0A1420;
 
-  --color-brand-50:  #EEF4F9;
-  --color-brand-100: #D9E6F1;
-  --color-brand-200: #B4CDE3;
-  --color-brand-300: #85AED0;
-  --color-brand-400: #5E95BF;
-  --color-brand-500: #4480B1;
-  --color-brand-600: #386D9A;
-  --color-brand-700: #2F5F88;
-  --color-brand-800: #2A5679;
-  --color-brand-900: #1E405B;
+  --color-brand-50:  #EAF2FB;
+  --color-brand-100: #D3E3F6;
+  --color-brand-200: #A9C8EE;
+  --color-brand-300: #7EACE4;
+  --color-brand-400: #5593DB;
+  --color-brand-500: #2F7BD3;
+  --color-brand-600: #2566B3;
+  --color-brand-700: #1E5494;
+  --color-brand-800: #184476;
+  --color-brand-900: #12365E;
+  --color-cyan-300: #7FD6EA;
 
-  --color-slate-500: #37495C;
-  --color-slate-600: #2C3B4B;
-  --color-slate-700: #22303D;
+  /* Kept so anything still using the slate names lands on the navy. */
+  --color-slate-500: #0E1B2A;
+  --color-slate-600: #16283C;
+  --color-slate-700: #0A1420;
 
-  /* One face for everything, which is how the old site read. */
-  --font-sans: var(--font-lato);
-  --font-display: var(--font-lato);
-  --font-body: var(--font-lato);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-bricolage);
+  --font-body: var(--font-inter);
 
   --text-xs: 0.8125rem;
   --text-sm: 0.9063rem;
   --text-base: 1.0625rem;
   --text-lg: 1.1875rem;
   --text-xl: 1.375rem;
-  --text-2xl: 1.6875rem;
-  --text-3xl: 2.125rem;
-  --text-4xl: 2.625rem;
-  --text-5xl: 3.25rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+  --text-5xl: 3.75rem;
+  --text-6xl: 4.5rem;
 
-  --radius-card: 10px;
-  --radius-lg: 14px;
+  --radius-card: 16px;
+  --radius-lg: 24px;
 
-  --shadow-sm: 0 1px 2px rgba(31, 42, 54, 0.06);
-  --shadow-md: 0 2px 4px rgba(31, 42, 54, 0.05), 0 8px 20px -10px rgba(31, 42, 54, 0.18);
-  --shadow-lg: 0 4px 8px rgba(31, 42, 54, 0.06), 0 20px 44px -20px rgba(31, 42, 54, 0.28);
+  --shadow-sm: 0 1px 2px rgba(14, 27, 42, 0.06);
+  --shadow-md: 0 2px 4px rgba(14, 27, 42, 0.04), 0 12px 28px -12px rgba(14, 27, 42, 0.18);
+  --shadow-lg: 0 4px 10px rgba(14, 27, 42, 0.06), 0 30px 60px -24px rgba(14, 27, 42, 0.3);
+  --shadow-glow: 0 0 0 1px rgba(47, 123, 211, 0.15), 0 20px 60px -20px rgba(47, 123, 211, 0.45);
 }
 
 @layer base {
@@ -72,23 +76,23 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--text-base);
-    line-height: 1.7;
+    line-height: 1.65;
     text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     color: var(--color-ink);
     text-wrap: balance;
-    line-height: 1.15;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    font-weight: 700;
   }
-  /* The old theme set its big headings in a light weight. Lato regular at
-     display sizes gives the same open feel without a synthesised 500. */
-  h1, h2 { font-weight: 400; letter-spacing: -0.005em; }
-  h3, h4 { font-weight: 700; }
+  h3, h4 { letter-spacing: -0.01em; line-height: 1.2; }
   :focus-visible {
-    outline: 3px solid var(--color-brand-600);
+    outline: 3px solid var(--color-brand-500);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: 4px;
   }
   ::selection { background: var(--color-brand-100); }
 }
@@ -108,17 +112,11 @@
   line-height: 1.75;
   color: var(--color-ink-soft);
   font-variant-numeric: lining-nums proportional-nums;
-  /* Reference lists carry long bare URLs; without this they force the whole
-     page wider than a phone viewport. */
   overflow-wrap: break-word;
 
-  /* :where() keeps specificity at zero so component classes always win.
-     The combinator has to sit outside it, or the selector list is empty. */
   & > :where(* + *) { margin-block-start: 1.4em; }
   & :where(h2) {
     font-size: var(--text-2xl);
-    font-weight: 700;
-    line-height: 1.2;
     margin-block-start: 1.9em;
     margin-block-end: 0.6em;
     color: var(--color-ink);
@@ -127,21 +125,21 @@
   & :where(h2:first-child) { margin-block-start: 0; }
   & :where(h3) {
     font-size: var(--text-xl);
-    font-weight: 700;
     margin-block-start: 1.8em;
     margin-block-end: 0.5em;
     color: var(--color-ink);
   }
-  & :where(h4) { font-size: var(--text-lg); font-weight: 700; margin-block-start: 1.6em; }
+  & :where(h4) { font-size: var(--text-lg); margin-block-start: 1.6em; }
   & :where(a) {
-    color: var(--color-brand-700);
+    color: var(--color-brand-600);
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
     text-decoration-thickness: 1px;
+    text-decoration-color: var(--color-brand-300);
     overflow-wrap: anywhere;
   }
-  & :where(a:hover) { color: var(--color-brand-800); text-decoration-thickness: 2px; }
-  & :where(strong) { color: var(--color-ink); font-weight: 700; }
+  & :where(a:hover) { color: var(--color-brand-700); text-decoration-color: currentColor; }
+  & :where(strong) { color: var(--color-ink); font-weight: 600; }
   & :where(em), & :where(i) { font-style: italic; }
   & :where(ol) { list-style: decimal; padding-inline-start: 1.4em; }
   & :where(ol) > :where(li) { margin-block: 0.55em; padding-inline-start: 0.2rem; }
@@ -162,46 +160,43 @@
     background: var(--color-brand-500);
   }
   & :where(li) > :where(ul), & :where(li) > :where(ol) { margin-block-start: 0.4em; }
-  & :where(li)::marker { color: var(--color-brand-500); }
-  /* A quotation should look quoted, not merely indented. */
+  & :where(li)::marker { color: var(--color-brand-500); font-weight: 600; }
   & :where(blockquote) {
     position: relative;
     margin-block: 1.8em;
-    padding: 1.2em 1.5em 1.2em 1.6em;
-    border-inline-start: 4px solid var(--color-brand-500);
-    border-radius: 0 10px 10px 0;
-    background: var(--color-brand-50);
-    font-size: 1.02em;
-    line-height: 1.6;
+    padding: 1.3em 1.6em 1.3em 1.8em;
+    border-inline-start: 3px solid var(--color-brand-500);
+    border-radius: 0 16px 16px 0;
+    background: var(--color-surface);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.08em;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
     color: var(--color-ink);
   }
   & :where(blockquote p:last-child) { margin-block-end: 0; }
   & :where(blockquote + blockquote) { margin-block-start: 0.8em; }
-  /* A note lifted out of the flow: the old theme's shaded box. */
   & :where(aside) {
     margin-block: 1.8em;
     padding: 1.1em 1.4em;
-    border: 1px solid var(--color-hairline);
-    border-radius: 10px;
-    background: var(--color-surface);
+    border: 1px solid var(--color-brand-100);
+    border-radius: 16px;
+    background: var(--color-brand-50);
     font-size: 0.98em;
-    box-shadow: var(--shadow-sm);
   }
   & :where(aside p:last-child) { margin-block-end: 0; }
   & :where(th), & :where(td) { text-align: left; padding: 0.7em 0.9em; border-block-end: 1px solid var(--color-hairline); vertical-align: top; }
-  & :where(th) { background: var(--color-surface); font-weight: 700; color: var(--color-ink); }
+  & :where(th) { background: var(--color-surface); font-weight: 600; color: var(--color-ink); }
   & :where(code) {
     background: var(--color-surface-2);
     padding: 0.1em 0.35em;
-    border-radius: 3px;
+    border-radius: 4px;
     font-size: 0.9em;
   }
   & :where(hr) { border: 0; border-block-start: 1px solid var(--color-hairline); margin-block: 2.5em; }
   & :where(del) { text-decoration: line-through; color: var(--color-muted); }
-  & :where(figure img) { border-radius: 10px; }
-
-  /* <Figure float="left|right">: the text that follows wraps beside the
-     image, the way the old posts set their square illustrations. */
+  & :where(figure img) { border-radius: 14px; }
   & :where(figure[data-float="left"]) { float: left; margin: 0.3em 1.5rem 0.85rem 0; }
   & :where(figure[data-float="right"]) { float: right; margin: 0.3em 0 0.85rem 1.5rem; }
   @media (max-width: 36rem) {
@@ -218,44 +213,117 @@
 /* ---------- Composition helpers ---------- */
 
 @utility surface-card {
-  /* Positioned so a stretched link (after:inset-0) covers this card and
-     nothing else. Without it the overlay resolves against the page. */
   position: relative;
   background: var(--color-paper);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 @utility surface-card-interactive {
   &:hover {
     border-color: var(--color-brand-300);
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 }
 
-/* The old theme's rounded, shadowed photographs. */
+/* Photographs: large radius, a hairline, and a soft lift. */
 @utility photo {
-  border-radius: 12px;
+  border-radius: 20px;
   box-shadow: var(--shadow-lg);
 }
 
+/* Section label: a small blue dot and tracked caps. */
 @utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--font-sans);
-  font-size: var(--text-xs);
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-brand-600);
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-brand-500);
+    box-shadow: 0 0 0 4px var(--color-brand-100);
+  }
 }
 
-/* Section headings outside prose. */
+@utility eyebrow-dark {
+  color: var(--color-brand-300);
+  &::before { background: var(--color-brand-400); box-shadow: 0 0 0 4px rgba(47, 123, 211, 0.25); }
+}
+
 @utility section-heading {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
-  font-weight: 400;
-  line-height: 1.15;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   color: var(--color-ink);
+  @media (min-width: 64rem) { font-size: 2.75rem; }
+}
+
+/* Soft blue glow behind a hero or a dark band. */
+@utility glow-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: 60%;
+    aspect-ratio: 1;
+    z-index: -1;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, rgba(47, 123, 211, 0.45), rgba(127, 214, 234, 0.18) 55%, transparent 75%);
+    filter: blur(20px);
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto auto -30% -10%;
+    width: 45%;
+    aspect-ratio: 1;
+    z-index: -1;
+    border-radius: 999px;
+    background: radial-gradient(closest-side, rgba(47, 123, 211, 0.25), transparent 70%);
+    filter: blur(24px);
+  }
+}
+
+/* A quiet grid, used behind dark bands so they are not flat blocks. */
+@utility band-texture {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 30%, transparent 100%);
+  }
+}
+
+/* Big outlined numerals for the process steps. */
+@utility step-number {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-brand-300);
 }

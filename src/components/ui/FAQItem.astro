@@ -1,19 +1,24 @@
 ---
-interface Props { q: string }
-const { q } = Astro.props;
+interface Props { q: string; n?: number }
+const { q, n } = Astro.props;
 ---
-<details class="group surface-card overflow-hidden bg-surface">
+<details class="group border-b border-hairline">
   <summary
-    class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-2 [&::-webkit-details-marker]:hidden"
+    class="flex cursor-pointer list-none items-start justify-between gap-5 py-5 text-left [&::-webkit-details-marker]:hidden"
   >
-    <h3 class="m-0 text-[1.05rem] font-bold text-slate-500">{q}</h3>
-    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-500 text-white transition-transform duration-200 group-open:rotate-45">
+    <span class="flex items-start gap-4">
+      {n !== undefined && (
+        <span class="mt-0.5 font-display text-sm font-bold text-brand-500">{String(n).padStart(2, '0')}</span>
+      )}
+      <h3 class="m-0 font-display text-[1.15rem] font-bold leading-snug text-ink">{q}</h3>
+    </span>
+    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-hairline-strong text-ink transition-all duration-200 group-open:rotate-45 group-open:border-brand-500 group-open:bg-brand-500 group-open:text-white">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
         <path d="M12 5v14M5 12h14" stroke-linecap="round" />
       </svg>
     </span>
   </summary>
-  <div class="faq-answer space-y-3 bg-paper px-5 py-5 leading-relaxed text-ink-soft">
+  <div class="faq-answer space-y-3 pb-6 pl-0 leading-relaxed text-ink-soft sm:pl-10">
     <slot />
   </div>
 </details>

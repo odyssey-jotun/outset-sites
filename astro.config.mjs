@@ -22,17 +22,25 @@ export default defineConfig({
   ],
   vite: { plugins: [tailwindcss()] },
 
-  // Lato is the one face on the site, served from our own origin. Astro
-  // downloads the files at build time and emits the @font-face rules inline,
-  // so the browser never waits on fonts.googleapis.com before painting.
-  // Lato only exists at 100/300/400/700/900; the old theme asked for 500 and
-  // 600 and got them synthesised. 400 and 700 are the real ones.
+  // Two faces, served from our own origin: Bricolage Grotesque carries the
+  // headlines and Inter carries everything else. Astro downloads the files at
+  // build time and emits the @font-face rules inline, so the browser never
+  // waits on fonts.googleapis.com before painting. Real weights only.
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Lato',
-      cssVariable: '--font-lato',
-      weights: [400, 700],
+      name: 'Bricolage Grotesque',
+      cssVariable: '--font-bricolage',
+      weights: [500, 700, 800],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['Helvetica Neue', 'Arial', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Inter',
+      cssVariable: '--font-inter',
+      weights: [400, 500, 600, 700],
       styles: ['normal', 'italic'],
       subsets: ['latin', 'latin-ext'],
       fallbacks: ['Helvetica Neue', 'Arial', 'ui-sans-serif', 'system-ui', 'sans-serif'],

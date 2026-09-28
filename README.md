@@ -63,10 +63,16 @@ fails the build with a readable error rather than shipping a page that quietly r
 
 ## Preview
 
-Every push to `main` also publishes a look-only copy at
-https://odyssey-jotun.github.io/outset-sites/ (`.github/workflows/preview.yml`). Every
-page there is marked noindex and the contact form has no Worker behind it, so it is for
-looking at the site, not for using it.
+`.github/workflows/preview.yml` publishes look-only copies of two branches:
+
+| Branch | Preview | What it is |
+|---|---|---|
+| `main` | https://odyssey-jotun.github.io/outset-sites/ | The current design, cloned faithfully |
+| `modern` | https://odyssey-jotun.github.io/outset-sites/modern/ | A redesign concept with the same copy |
+
+Every page there is marked noindex and the contact form has no Worker behind it, so
+they are for looking at the site, not for using it. A strip at the foot of each page
+links to the other one.
 
 ## Deploying
 
