@@ -38,6 +38,8 @@ The normal flow for a new post:
 4. Set `draft: false`, commit, push to `main`.
 5. Confirm the page actually loads at its real URL and tell him the address.
 
+A look-only copy of `main` is published at https://odyssey-jotun.github.io/outset-sites/ by `preview.yml`, noindex, with no contact form behind it. That is where Marc looks at changes until Cloudflare is connected.
+
 ## Conventions a post has to follow
 
 These are settled house rules, carried over from Marc's other sites. Each one is here because it was got wrong once and he had to say so.

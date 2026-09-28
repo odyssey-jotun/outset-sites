@@ -61,6 +61,13 @@ Write in Markdown. A sentence with a source.<Cite n="1" />
 These rules are enforced at build time. A title over 60 characters or a missing description
 fails the build with a readable error rather than shipping a page that quietly ranks badly.
 
+## Preview
+
+Every push to `main` also publishes a look-only copy at
+https://odyssey-jotun.github.io/outset-sites/ (`.github/workflows/preview.yml`). Every
+page there is marked noindex and the contact form has no Worker behind it, so it is for
+looking at the site, not for using it.
+
 ## Deploying
 
 Pushing `main` runs `.github/workflows/deploy.yml`: type check, build, tests, audit, then a
