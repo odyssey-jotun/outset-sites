@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+*.tsbuildinfo
+
+# Cloudflare / Wrangler local state
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# Secrets. Never commit.
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+*.log
+
+# Deliberately NOT ignored, so the project stays inspectable:
+#   public/_redirects    the old WordPress URLs and where they now point
+#   src/assets/          images (content, not build output)
+#   public/showcase/     the portfolio hover videos

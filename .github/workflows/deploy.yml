@@ -1,0 +1,74 @@
+name: Verify and deploy
+
+# main -> the Cloudflare Worker (and the live site, once the domain is attached).
+#
+# Every deploy is gated on the same checks that run locally: type check,
+# build, unit tests, then the audit of every built page. A deploy that skips
+# the audit is a deploy that can ship a broken link or a page with no title.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Check, build, test, audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npx astro check
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm test
+      - name: Audit the built site
+        run: npm run audit
+      # The deploy job gets exactly the files the audit passed.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: verify
+    runs-on: ubuntu-latest
+    # Pull requests are verified but never deployed. The deploy also waits
+    # until the two Cloudflare secrets exist on the repository; until then
+    # every push is checked and nothing is published.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    env:
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Deploy
+        if: env.HAS_CLOUDFLARE == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Not deployed
+        if: env.HAS_CLOUDFLARE != 'true'
+        run: echo "CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are not set on this repository, so the verified build was not deployed."

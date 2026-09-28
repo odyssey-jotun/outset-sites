@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import { responsiveWidths } from '../../lib/responsive-widths';
+
+interface Props {
+  /** Bare filename of an image in src/assets/blog/ */
+  src: string;
+  alt: string;
+  caption?: string;
+  /** When present the image is wrapped in a link. */
+  href?: string;
+  /** Float the image so following text wraps beside it. */
+  float?: 'left' | 'right';
+}
+const { src, alt, caption, href, float } = Astro.props;
+const floated = float === 'left' || float === 'right';
+
+// Glob every blog image so authors reference one by filename alone.
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/blog/*.{jpeg,jpg,png,gif,webp,avif,svg}',
+  { eager: true }
+);
+const entry = images[`/src/assets/blog/${src}`];
+
+if (!entry) {
+  throw new Error(
+    `Figure: no image named "${src}" in src/assets/blog/.\n` +
+    `Check the filename, or add the file. Available example: ` +
+    `${Object.keys(images)[0]?.split('/').pop() ?? '(none)'}`
+  );
+}
+
+const meta = entry.default;
+
+// The reading column is 42rem; an image never runs wider than that or than
+// its own pixels. The old posts floated their square illustrations at
+// 300px beside the text, which is what a float here reproduces.
+const TEXT_COLUMN = 672;
+const FLOAT_WIDTH = 300;
+const capPx = floated ? FLOAT_WIDTH : Math.min(meta.width, TEXT_COLUMN);
+const widths = floated
+  ? responsiveWidths(meta.width, [FLOAT_WIDTH, FLOAT_WIDTH * 2])
+  : responsiveWidths(meta.width, [480, 800, 1200]);
+---
+<figure
+  class:list={[!floated && 'my-8']}
+  data-float={float}
+  style={`max-width:${capPx}px`}
+>
+  {href ? (
+    <a href={href} class="block no-underline">
+      <Image
+        src={entry.default}
+        alt={alt}
+        widths={widths}
+        sizes={`(max-width: ${capPx}px) 100vw, ${capPx}px`}
+        loading="lazy"
+        decoding="async"
+        class="h-auto w-full rounded-[10px] border border-hairline"
+      />
+    </a>
+  ) : (
+    <Image
+      src={entry.default}
+      alt={alt}
+      widths={widths}
+      sizes={`(max-width: ${capPx}px) 100vw, ${capPx}px`}
+      loading="lazy"
+      decoding="async"
+      class="h-auto w-full rounded-[10px] border border-hairline"
+    />
+  )}
+  {caption && <figcaption class="mt-2 text-sm text-muted">{caption}</figcaption>}
+</figure>

@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+/*
+ * Outset's identity is a mid blue (#4480B1), a dark slate (#37495C) and a
+ * warm off-white (#EDEDEA), all lifted from the WordPress theme. The blue is
+ * kept as the decorative brand colour and deepened one step wherever it has
+ * to carry white text: #4480B1 under white sits at 4.2:1, just under WCAG
+ * AA, so the bands use #386D9A (5.5:1) and links on paper use #2F5F88 (6.8:1).
+ * The slate carries buttons and the darkest text. There is no second accent:
+ * a button is always slate, a band is always blue, so each means one thing.
+ */
+@theme {
+  --color-ink: #1F2A36;
+  --color-ink-soft: #37495C;
+  --color-muted: #566678;
+  --color-hairline: #DDE3E8;
+  --color-hairline-strong: #C6D0DA;
+  --color-paper: #FFFFFF;
+  --color-surface: #EDEDEA;
+  --color-surface-2: #E2E5E6;
+  --color-footer: #0A0A0A;
+
+  --color-brand-50:  #EEF4F9;
+  --color-brand-100: #D9E6F1;
+  --color-brand-200: #B4CDE3;
+  --color-brand-300: #85AED0;
+  --color-brand-400: #5E95BF;
+  --color-brand-500: #4480B1;
+  --color-brand-600: #386D9A;
+  --color-brand-700: #2F5F88;
+  --color-brand-800: #2A5679;
+  --color-brand-900: #1E405B;
+
+  --color-slate-500: #37495C;
+  --color-slate-600: #2C3B4B;
+  --color-slate-700: #22303D;
+
+  /* One face for everything, which is how the old site read. */
+  --font-sans: var(--font-lato);
+  --font-display: var(--font-lato);
+  --font-body: var(--font-lato);
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9063rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.6875rem;
+  --text-3xl: 2.125rem;
+  --text-4xl: 2.625rem;
+  --text-5xl: 3.25rem;
+
+  --radius-card: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 1px 2px rgba(31, 42, 54, 0.06);
+  --shadow-md: 0 2px 4px rgba(31, 42, 54, 0.05), 0 8px 20px -10px rgba(31, 42, 54, 0.18);
+  --shadow-lg: 0 4px 8px rgba(31, 42, 54, 0.06), 0 20px 44px -20px rgba(31, 42, 54, 0.28);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    text-wrap: balance;
+    line-height: 1.15;
+  }
+  /* The old theme set its big headings in a light weight. Lato regular at
+     display sizes gives the same open feel without a synthesised 500. */
+  h1, h2 { font-weight: 400; letter-spacing: -0.005em; }
+  h3, h4 { font-weight: 700; }
+  :focus-visible {
+    outline: 3px solid var(--color-brand-600);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  ::selection { background: var(--color-brand-100); }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* Long-form article typography. Applied to rendered MDX. */
+@utility prose-outset {
+  max-width: 42rem;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+  font-variant-numeric: lining-nums proportional-nums;
+  /* Reference lists carry long bare URLs; without this they force the whole
+     page wider than a phone viewport. */
+  overflow-wrap: break-word;
+
+  /* :where() keeps specificity at zero so component classes always win.
+     The combinator has to sit outside it, or the selector list is empty. */
+  & > :where(* + *) { margin-block-start: 1.4em; }
+  & :where(h2) {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-block-start: 1.9em;
+    margin-block-end: 0.6em;
+    color: var(--color-ink);
+    clear: both;
+  }
+  & :where(h2:first-child) { margin-block-start: 0; }
+  & :where(h3) {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-block-start: 1.8em;
+    margin-block-end: 0.5em;
+    color: var(--color-ink);
+  }
+  & :where(h4) { font-size: var(--text-lg); font-weight: 700; margin-block-start: 1.6em; }
+  & :where(a) {
+    color: var(--color-brand-700);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    overflow-wrap: anywhere;
+  }
+  & :where(a:hover) { color: var(--color-brand-800); text-decoration-thickness: 2px; }
+  & :where(strong) { color: var(--color-ink); font-weight: 700; }
+  & :where(em), & :where(i) { font-style: italic; }
+  & :where(ol) { list-style: decimal; padding-inline-start: 1.4em; }
+  & :where(ol) > :where(li) { margin-block: 0.55em; padding-inline-start: 0.2rem; }
+  & :where(ul) { list-style: none; padding-inline-start: 0; }
+  & :where(ul) > :where(li) {
+    position: relative;
+    padding-inline-start: 1.6rem;
+    margin-block: 0.55em;
+  }
+  & :where(ul) > :where(li)::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.35rem;
+    inset-block-start: 0.72em;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-brand-500);
+  }
+  & :where(li) > :where(ul), & :where(li) > :where(ol) { margin-block-start: 0.4em; }
+  & :where(li)::marker { color: var(--color-brand-500); }
+  /* A quotation should look quoted, not merely indented. */
+  & :where(blockquote) {
+    position: relative;
+    margin-block: 1.8em;
+    padding: 1.2em 1.5em 1.2em 1.6em;
+    border-inline-start: 4px solid var(--color-brand-500);
+    border-radius: 0 10px 10px 0;
+    background: var(--color-brand-50);
+    font-size: 1.02em;
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+  & :where(blockquote p:last-child) { margin-block-end: 0; }
+  & :where(blockquote + blockquote) { margin-block-start: 0.8em; }
+  /* A note lifted out of the flow: the old theme's shaded box. */
+  & :where(aside) {
+    margin-block: 1.8em;
+    padding: 1.1em 1.4em;
+    border: 1px solid var(--color-hairline);
+    border-radius: 10px;
+    background: var(--color-surface);
+    font-size: 0.98em;
+    box-shadow: var(--shadow-sm);
+  }
+  & :where(aside p:last-child) { margin-block-end: 0; }
+  & :where(th), & :where(td) { text-align: left; padding: 0.7em 0.9em; border-block-end: 1px solid var(--color-hairline); vertical-align: top; }
+  & :where(th) { background: var(--color-surface); font-weight: 700; color: var(--color-ink); }
+  & :where(code) {
+    background: var(--color-surface-2);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  & :where(hr) { border: 0; border-block-start: 1px solid var(--color-hairline); margin-block: 2.5em; }
+  & :where(del) { text-decoration: line-through; color: var(--color-muted); }
+  & :where(figure img) { border-radius: 10px; }
+
+  /* <Figure float="left|right">: the text that follows wraps beside the
+     image, the way the old posts set their square illustrations. */
+  & :where(figure[data-float="left"]) { float: left; margin: 0.3em 1.5rem 0.85rem 0; }
+  & :where(figure[data-float="right"]) { float: right; margin: 0.3em 0 0.85rem 1.5rem; }
+  @media (max-width: 36rem) {
+    & :where(figure[data-float]) { float: none; margin-inline: 0; }
+  }
+  & :where(.not-prose) { font-family: var(--font-sans); font-size: var(--text-base); margin-block: 2em; }
+  & :where(.not-prose) :where(p) { margin-block: 0.6em; }
+  & :where(.not-prose) :where(p:first-child) { margin-block-start: 0; }
+  & :where(.not-prose) :where(p:last-child) { margin-block-end: 0; }
+  & :where(figcaption) { font-family: var(--font-sans); }
+  & :where(pre), & :where(.table-scroll) { overflow-x: auto; }
+}
+
+/* ---------- Composition helpers ---------- */
+
+@utility surface-card {
+  /* Positioned so a stretched link (after:inset-0) covers this card and
+     nothing else. Without it the overlay resolves against the page. */
+  position: relative;
+  background: var(--color-paper);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+@utility surface-card-interactive {
+  &:hover {
+    border-color: var(--color-brand-300);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+/* The old theme's rounded, shadowed photographs. */
+@utility photo {
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-brand-600);
+}
+
+/* Section headings outside prose. */
+@utility section-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--color-ink);
+}

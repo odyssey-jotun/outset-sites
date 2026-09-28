@@ -1,0 +1,24 @@
+---
+import { NAV } from '../../lib/nav';
+import { LEGAL_NAME } from '../../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="mt-auto bg-footer text-white">
+  <div class="container-page flex flex-col gap-6 py-8 md:flex-row md:items-center md:justify-between">
+    <p class="text-[1.05rem] text-brand-100">
+      &copy; {year} | {LEGAL_NAME} | All Rights Reserved
+    </p>
+    <nav aria-label="Footer">
+      <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} class="text-[0.95rem] text-brand-100 no-underline hover:text-white">{item.label}</a>
+          </li>
+        ))}
+        <li>
+          <a href="/rss.xml" class="text-[0.95rem] text-brand-100 no-underline hover:text-white">RSS</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</footer>

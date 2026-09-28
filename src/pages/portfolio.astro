@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import { SHOWCASE } from '../lib/showcase';
+import { CONTACT_HREF } from '../lib/site';
+
+const stills = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/showcase/*.{png,jpg,jpeg,webp}',
+  { eager: true }
+);
+const items = SHOWCASE.map((item) => {
+  const still = stills[`/src/assets/showcase/${item.image}`];
+  if (!still) throw new Error(`Showcase: no image named "${item.image}" in src/assets/showcase/.`);
+  return { ...item, still: still.default };
+});
+---
+<BaseLayout
+  title="Site Showcase"
+  description="Websites Outset Web Design has built for authors, shops, non-profits and small businesses. Hover any one to scroll through the site."
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Showcase', url: '/portfolio/' }]}
+>
+  <div class="container-page py-14 lg:py-20">
+    <h1 class="text-center text-4xl lg:text-5xl">Site Showcase</h1>
+    <p class="mx-auto mt-4 max-w-2xl text-center text-lg leading-relaxed text-ink-soft">
+      A few of the sites we have built. Hover over one to scroll through it.
+    </p>
+
+    <ul class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((item) => (
+        <li class="showcase-item surface-card surface-card-interactive overflow-hidden">
+          <figure class="m-0">
+            <div class="relative aspect-[3/2] w-full overflow-hidden bg-surface">
+              {/* Every still is 600x400, so one width covers every slot. */}
+              <Image
+                src={item.still}
+                alt={`Homepage of the ${item.name} website`}
+                widths={[600]}
+                sizes="(max-width: 40rem) calc(100vw - 3rem), 24rem"
+                loading="lazy"
+                class="h-full w-full object-cover object-top"
+              />
+              {/* The scrolling capture. preload="none" means nothing
+                  downloads until a pointer arrives; touch screens only ever
+                  see the still. */}
+              <video
+                class="absolute inset-0 h-full w-full object-cover object-top opacity-0 transition-opacity duration-200"
+                src={item.video}
+                muted
+                loop
+                playsinline
+                preload="none"
+                aria-hidden="true"
+                tabindex="-1"
+              ></video>
+            </div>
+            <figcaption class="p-5">
+              <p class="text-lg font-bold text-ink">{item.name}</p>
+              <p class="mt-1 text-sm text-muted">{item.kind}</p>
+            </figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-16 rounded-[12px] bg-brand-600 p-8 text-center text-white lg:p-12">
+      <h2 class="text-2xl lg:text-3xl">Want yours on this page?</h2>
+      <p class="mx-auto mt-3 max-w-xl leading-relaxed text-brand-50">
+        Tell us about your business and one of us will get back to you within 48 hours.
+      </p>
+      <Button href={CONTACT_HREF} variant="inverse" size="lg" class="mt-7">Get in Touch</Button>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // Hover plays the capture; leaving pauses it and rewinds, so the still
+  // is what shows again. Only wired up for devices with a hover pointer.
+  if (window.matchMedia('(hover: hover)').matches) {
+    for (const item of document.querySelectorAll<HTMLElement>('.showcase-item')) {
+      const video = item.querySelector('video');
+      if (!video) continue;
+      item.addEventListener('mouseenter', () => {
+        video.play().then(() => { video.style.opacity = '1'; }).catch(() => {});
+      });
+      item.addEventListener('mouseleave', () => {
+        video.pause();
+        video.currentTime = 0;
+        video.style.opacity = '0';
+      });
+    }
+  }
+</script>

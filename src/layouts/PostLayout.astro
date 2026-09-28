@@ -1,0 +1,127 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { responsiveWidths } from '../lib/responsive-widths';
+import BaseLayout from './BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import TableOfContents from '../components/ui/TableOfContents.astro';
+import PostGrid from '../components/ui/PostGrid.astro';
+import { categoryLabel, tagLabel, formatDate } from '../lib/post-utils';
+import { CONTACT_HREF } from '../lib/site';
+import type { Post } from '../lib/blog';
+import type { MarkdownHeading } from 'astro';
+
+interface Props { post: Post; related: Post[]; minutes: number; headings: MarkdownHeading[] }
+const { post, related, minutes, headings } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, heroImage, heroAlt, author } = post.data;
+
+const heroes = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/blog/*.{jpeg,jpg,png,gif,webp,avif,svg}',
+  { eager: true }
+);
+const hero = heroImage ? heroes[`/src/assets/blog/${heroImage}`] : undefined;
+if (heroImage && !hero) throw new Error(`${post.id}: no image named "${heroImage}" in src/assets/blog/.`);
+if (hero && !heroAlt) throw new Error(`${post.id}: heroImage needs heroAlt.`);
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Blog', url: '/blog/' },
+  { name: categoryLabel(category), url: `/category/${category}/` },
+  { name: title, url: `/${post.id}/` },
+];
+
+// Share image: the post's own hero, sized for social cards.
+const ogImage = hero
+  ? (await getImage({ src: hero.default, width: 1200, height: 630, format: 'jpeg', fit: 'cover' })).src
+  : undefined;
+---
+<BaseLayout
+  title={title}
+  description={description}
+  image={ogImage}
+  type="article"
+  author={author}
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+  breadcrumbs={breadcrumbs}
+>
+  <article class="container-page py-10 lg:py-14">
+    <nav aria-label="Breadcrumb" class="mx-auto mb-6 max-w-[42rem] text-sm text-muted">
+      <ol class="flex flex-wrap items-center gap-1.5">
+        <li><a href="/" class="no-underline hover:text-brand-700">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/blog/" class="no-underline hover:text-brand-700">Blog</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href={`/category/${category}/`} class="no-underline hover:text-brand-700">{categoryLabel(category)}</a></li>
+      </ol>
+    </nav>
+
+    <header class="mx-auto max-w-[42rem]">
+      <h1 class="text-3xl lg:text-4xl">{title}</h1>
+      <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+        <span>{author}</span>
+        <span aria-hidden="true">&middot;</span>
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <span aria-hidden="true">&middot;</span>
+        <span>{minutes} min read</span>
+        {updatedDate && (
+          <>
+            <span aria-hidden="true">&middot;</span>
+            <span>Updated {formatDate(updatedDate)}</span>
+          </>
+        )}
+      </div>
+    </header>
+
+    {hero && (
+      <Image
+        src={hero.default}
+        alt={heroAlt ?? ''}
+        widths={responsiveWidths(hero.default.width, [480, 700, 1000])}
+        sizes="(max-width: 44rem) 100vw, 42rem"
+        loading="eager"
+        fetchpriority="high"
+        class="mx-auto mt-8 w-full max-w-[42rem] rounded-[10px] border border-hairline"
+      />
+    )}
+
+    <TableOfContents headings={headings} />
+
+    <div class="prose-outset mx-auto mt-10">
+      <slot />
+    </div>
+
+    {tags.length > 0 && (
+      <div class="mx-auto mt-12 max-w-[42rem] border-t border-hairline pt-6">
+        <h2 class="text-xs font-bold uppercase tracking-[0.12em] text-muted">Tagged</h2>
+        <ul class="mt-3 flex flex-wrap gap-2">
+          {tags.map((t) => (
+            <li>
+              <a
+                href={`/tag/${t}/`}
+                class="inline-block rounded-full border border-hairline px-3 py-1 text-sm text-ink-soft no-underline hover:border-brand-400 hover:text-brand-700"
+              >
+                {tagLabel(t)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <aside class="mx-auto mt-14 max-w-[42rem] rounded-[12px] bg-brand-600 p-8 text-white">
+      <h2 class="text-2xl">Want a site that brings you customers?</h2>
+      <p class="mt-3 leading-relaxed text-brand-50">
+        Drop us a line and one of us will get back to you within 48 hours. No high-pressure
+        sales, just an open, honest look at your needs.
+      </p>
+      <Button href={CONTACT_HREF} variant="inverse" class="mt-6">Get in Touch</Button>
+    </aside>
+
+    {related.length > 0 && (
+      <section class="mt-16">
+        <h2 class="text-2xl">Keep reading</h2>
+        <div class="mt-8"><PostGrid posts={related} /></div>
+      </section>
+    )}
+  </article>
+</BaseLayout>

@@ -1,0 +1,111 @@
+---
+/**
+ * JSON-LD generated from the same data that already has to be correct, so
+ * structured data cannot drift from what the page actually says.
+ */
+import { LEGAL_NAME, SITE_DESCRIPTION } from '../../lib/site';
+
+interface Crumb { name: string; url: string }
+interface Faq { question: string; answer: string }
+
+interface Props {
+  type: 'organization' | 'article';
+  title?: string;
+  description?: string;
+  image?: string;
+  author?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  breadcrumbs?: Crumb[];
+  faq?: Faq[];
+}
+const {
+  type, title, description, image, author, publishedTime, modifiedTime, breadcrumbs, faq,
+} = Astro.props;
+const site = Astro.site!.href.replace(/\/$/, '');
+
+const organization = {
+  '@type': 'Organization',
+  '@id': `${site}/#organization`,
+  name: LEGAL_NAME,
+  alternateName: 'Outset Sites',
+  url: `${site}/`,
+  description: SITE_DESCRIPTION,
+  logo: {
+    '@type': 'ImageObject',
+    '@id': `${site}/#logo`,
+    url: `${site}/apple-touch-icon.png`,
+    width: 180,
+    height: 180,
+  },
+  founder: [
+    { '@type': 'Person', name: 'Joe Green' },
+    { '@type': 'Person', name: 'Marc Gray' },
+  ],
+  areaServed: { '@type': 'Country', name: 'United States' },
+  knowsAbout: ['Web design', 'Small business websites', 'Website hosting', 'SEO', 'Blogging'],
+};
+
+const graph: Record<string, unknown>[] = [
+  organization,
+  {
+    '@type': 'WebSite',
+    '@id': `${site}/#website`,
+    url: `${site}/`,
+    name: 'Outset Sites',
+    publisher: { '@id': `${site}/#organization` },
+    inLanguage: 'en-US',
+  },
+];
+
+if (type === 'article' && title) {
+  graph.push({
+    '@type': 'Article',
+    headline: title,
+    description,
+    ...(image ? { image: new URL(image, Astro.site).href } : {}),
+    ...(publishedTime ? { datePublished: publishedTime.toISOString() } : {}),
+    // Where no separate revision is recorded, the publication date is the
+    // honest dateModified: the content has not changed since.
+    ...(publishedTime || modifiedTime
+      ? { dateModified: (modifiedTime ?? publishedTime)!.toISOString() }
+      : {}),
+    author: author
+      ? { '@type': 'Person', name: author, worksFor: { '@id': `${site}/#organization` } }
+      : { '@id': `${site}/#organization` },
+    publisher: { '@id': `${site}/#organization` },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': new URL(Astro.url.pathname, Astro.site).href },
+  });
+}
+
+if (faq?.length) {
+  const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+  graph.push({
+    '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
+    url: pageUrl,
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  });
+}
+
+if (breadcrumbs?.length) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.name,
+      item: new URL(c.url, Astro.site).href,
+    })),
+  });
+}
+---
+<script
+  type="application/ld+json"
+  is:inline
+  set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })}
+/>

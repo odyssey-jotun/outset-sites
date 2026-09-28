@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import { Font } from 'astro:assets';
+import SEO from '../components/seo/SEO.astro';
+import Schema from '../components/seo/Schema.astro';
+import Analytics from '../components/seo/Analytics.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { SITE_NAME } from '../lib/site';
+
+interface Crumb { name: string; url: string }
+interface Faq { question: string; answer: string }
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article';
+  author?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  noindex?: boolean;
+  breadcrumbs?: Crumb[];
+  faq?: Faq[];
+}
+const {
+  title, description, image, type = 'website', author,
+  publishedTime, modifiedTime, noindex, breadcrumbs, faq,
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
+
+    <!-- Self-hosted; see the fonts block in astro.config.mjs. Only the
+         upright latin face is preloaded: it is what paints the page. The
+         italic and latin-ext stay declared and download by unicode-range
+         on the pages that use them. -->
+    <Font cssVariable="--font-lato" preload={[{ subset: 'latin', style: 'normal', weight: '400' }]} />
+
+    <Analytics />
+
+    <SEO
+      title={title} description={description} image={image} type={type}
+      publishedTime={publishedTime} modifiedTime={modifiedTime} noindex={noindex}
+    />
+    <Schema
+      type={type === 'article' ? 'article' : 'organization'}
+      title={title} description={description} image={image} author={author}
+      publishedTime={publishedTime} modifiedTime={modifiedTime}
+      breadcrumbs={breadcrumbs} faq={faq}
+    />
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-slate-500 focus:px-4 focus:py-2 focus:text-white"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

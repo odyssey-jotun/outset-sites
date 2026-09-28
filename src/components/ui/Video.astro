@@ -1,0 +1,60 @@
+---
+/**
+ * YouTube embed, responsive and lazily loaded.
+ *
+ * `loading="lazy"` on its own does not hold the player back on a phone:
+ * Chrome's lazy threshold for iframes runs to several thousand pixels, so an
+ * embed far down the page still starts loading on arrival and its script
+ * competes with the hero image. The src is held in data-src and set when the
+ * frame comes within 800px of the viewport. Without JavaScript the
+ * <noscript> copy loads as before. youtube-nocookie keeps it from setting
+ * tracking cookies before playback.
+ */
+interface Props { id: string; title?: string }
+const { id, title } = Astro.props;
+const label = title && title.trim() ? title : 'Video';
+const src = `https://www.youtube-nocookie.com/embed/${id}?rel=0`;
+const allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+---
+<figure class="my-10">
+  <div class="relative aspect-video w-full overflow-hidden rounded-[10px] border border-hairline bg-surface-2 shadow-[var(--shadow-md)]">
+    <iframe
+      class="absolute inset-0 h-full w-full"
+      data-src={src}
+      title={label}
+      loading="lazy"
+     
+      allow={allow}
+      allowfullscreen
+    ></iframe>
+    <noscript>
+      <iframe class="absolute inset-0 h-full w-full" src={src} title={label} loading="lazy" allow={allow} allowfullscreen></iframe>
+    </noscript>
+  </div>
+  {title && title.trim() && (
+    <figcaption class="mt-2.5 text-sm text-muted">{title}</figcaption>
+  )}
+</figure>
+
+<script>
+  // Runs once per page however many embeds it has (Astro dedupes it).
+  const frames = document.querySelectorAll<HTMLIFrameElement>('iframe[data-src]');
+  const load = (frame: HTMLIFrameElement) => {
+    if (!frame.src && frame.dataset.src) frame.src = frame.dataset.src;
+  };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          load(entry.target as HTMLIFrameElement);
+          io.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '800px 0px' },
+    );
+    frames.forEach((frame) => io.observe(frame));
+  } else {
+    frames.forEach(load);
+  }
+</script>

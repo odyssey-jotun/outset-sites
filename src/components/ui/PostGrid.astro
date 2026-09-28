@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import { responsiveWidths } from '../../lib/responsive-widths';
+import { formatDate, readingTime } from '../../lib/post-utils';
+import type { Post } from '../../lib/blog';
+
+interface Props { posts: Post[] }
+const { posts } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/blog/*.{jpeg,jpg,png,gif,webp,avif,svg}',
+  { eager: true }
+);
+---
+<ul class="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
+  {posts.map((post) => {
+    const img = post.data.heroImage ? images[`/src/assets/blog/${post.data.heroImage}`] : undefined;
+    return (
+      <li class="surface-card surface-card-interactive relative flex flex-col overflow-hidden">
+        {img ? (
+          <Image
+            src={img.default}
+            alt=""
+            widths={responsiveWidths(img.default.width, [400, 640, 800])}
+            sizes="(max-width: 40rem) calc(100vw - 3rem), 22rem"
+            quality={72}
+            loading="lazy"
+            class="aspect-[16/10] w-full object-cover object-top"
+          />
+        ) : (
+          <div class="aspect-[16/10] w-full border-b border-hairline bg-brand-50"></div>
+        )}
+        <div class="flex flex-1 flex-col p-6">
+          <h3 class="text-xl font-normal leading-snug">
+            <a href={`/${post.id}/`} class="text-ink no-underline after:absolute after:inset-0 hover:text-brand-700">
+              {post.data.title}
+            </a>
+          </h3>
+          <p class="mt-2 text-sm text-muted">
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            <span aria-hidden="true"> &middot; </span>
+            <span>{readingTime(post.body ?? '')} min read</span>
+          </p>
+          <p class="mt-3 line-clamp-4 leading-relaxed text-ink-soft">{post.data.description}</p>
+        </div>
+      </li>
+    );
+  })}
+</ul>

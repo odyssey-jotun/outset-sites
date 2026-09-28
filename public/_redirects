@@ -1,0 +1,25 @@
+# Every rule here keeps an old WordPress URL working. Add freely, remove
+# nothing without a reason.
+
+# Feeds
+/feed/            /rss.xml   301
+/feed             /rss.xml   301
+/comments/feed/   /rss.xml   301
+/sitemap.xml      /sitemap-index.xml  301
+
+# Divi's "project" post type held three placeholder projects that were never
+# real work. The showcase page is where the portfolio actually lives.
+/project/*            /portfolio/  301
+/project_category/*   /portfolio/  301
+/project_tag/*        /portfolio/  301
+
+# Empty WordPress categories fold into the blog index
+/category/uncategorized/  /blog/  301
+/category/test/           /blog/  301
+/home/                    /       301
+
+# WordPress admin and API surfaces no longer exist
+/wp-admin/*    /   301
+/wp-login.php  /   301
+/xmlrpc.php    /   301
+/wp-json/*     /   301

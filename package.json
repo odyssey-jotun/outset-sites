@@ -1,0 +1,44 @@
+{
+  "name": "outset-sites",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.3.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "astro check && vitest run",
+    "audit": "node scripts/audit-build.mjs",
+    "check:rendered": "node scripts/check-rendered.mjs",
+    "qa": "npm run check && npm run build && npm test && npm run audit",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "7.0.8",
+    "@astrojs/preact": "6.0.4",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.3",
+    "astro": "7.2.7",
+    "preact": "10.29.8",
+    "rehype-external-links": "^3.0.0",
+    "rehype-slug": "^6.0.0",
+    "sharp": "0.35.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20260825.1",
+    "@tailwindcss/vite": "4.3.3",
+    "playwright": "^1.62.1",
+    "tailwindcss": "4.3.3",
+    "turndown": "7.2.4",
+    "typescript": "^6.0.3",
+    "vitest": "4.1.11",
+    "wrangler": "^4.126.0"
+  }
+}

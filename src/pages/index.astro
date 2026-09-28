@@ -1,0 +1,357 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Icon from '../components/ui/Icon.astro';
+import FAQ from '../components/ui/FAQ.astro';
+import FAQItem from '../components/ui/FAQItem.astro';
+import ContactForm from '../components/islands/ContactForm';
+import { TAGLINE } from '../lib/site';
+
+import deviceMockup from '../assets/brand/device-mockup.png';
+import frustratedOwner from '../assets/brand/frustrated-owner.png';
+import galleryWindow from '../assets/brand/gallery-window.png';
+import showingClient from '../assets/brand/showing-client.png';
+import joe from '../assets/brand/joe-green.png';
+import marc from '../assets/brand/marc-gray.png';
+import paperPlane from '../assets/brand/paper-plane.png';
+import iconCalendar from '../assets/brand/icon-calendar.png';
+import iconBuild from '../assets/brand/icon-build.png';
+import iconGrowth from '../assets/brand/icon-growth.png';
+import iconFrontend from '../assets/brand/icon-frontend.png';
+import iconHosting from '../assets/brand/icon-hosting.png';
+import iconSeo from '../assets/brand/icon-seo.png';
+
+const process = [
+  { icon: iconCalendar, alt: 'Icon of a calendar', title: 'Schedule a call with us',
+    body: 'Schedule a quick consultation. There we’ll assess your needs, give you a quote, and move onto building your site.' },
+  { icon: iconBuild, alt: 'Icon of a computer screen with a gear', title: 'We build your site',
+    body: 'We create your custom site tailored to your web traffic goals. We design every page with your customer’s journey in mind to maximize your conversion rates.' },
+  { icon: iconGrowth, alt: 'Icon of a rising bar graph', title: 'Watch your business grow',
+    body: 'With your site launched, you’re ready to go! We track site data, monitor your best key words, and ensure your site has an SEO strategy that meets your budget.' },
+];
+
+const services = [
+  { icon: iconFrontend, alt: 'Icon of a laptop', title: 'Front End Web Development',
+    body: 'Your website is your most valuable employee. We build custom sites that work 24/7 to showcase your brand.' },
+  { icon: iconHosting, alt: 'Icon of a shield with a cog', title: 'Hosting & Site Maintenance',
+    body: 'Fast, secure, and always online. We give your site a home and manage the tech so you don’t have to!' },
+  { icon: iconSeo, alt: 'Icon of a magnifying glass and rising bar graph', title: 'SEO Strategy & Blogging',
+    body: 'Expand your reach and client base by showing up in Google search with our proven SEO and blogging strategies.' },
+];
+
+/*
+ * The questions and their answers, once. The accordion below renders from
+ * this list and so does the FAQPage structured data, so the two cannot
+ * drift apart.
+ */
+const faq = [
+  { question: 'Is a website really necessary for a small business or startup?',
+    answer: 'The short answer is a resounding “YES.” While we live in the days of TikTok, Reels, and Shorts, most people still trust what Google shows them when they search for local businesses. Therefore, unless you don’t want new customers, every business needs a website to have visibility on the internet for Google searchers or otherwise.' },
+  { question: 'I made a Facebook page and already have a following. Why then do I need a website?',
+    answer: 'If you’re already gaining clients via your Facebook page, there’s a greater chance of you gaining more customers on your website. Google prefers to send search results to brands that are indexed in its database. Additionally, if your business’ only digital presence is housed on a platform you don’t own (Facebook, Instagram, etc), you’re essentially one update from losing that exposure. You’re also at the mercy of others on those platforms who are using paid advertising.' },
+  { question: 'How expensive is it to make a website for a small business?',
+    answer: 'Prices for websites are highly individualized. A plumber starting out will need far less to get their site up and running than an attorney who’s been practicing for 25 years. Likewise, a suburban landscaping business will likely require more pages and service listings than a landscaping business that exclusively works with golf courses. The real question you’re asking then is this: How can I be certain I won’t pay for things I don’t need? Simple answer: you hire someone who wants to help your business grow. When you grow your business at a scale that works for you, not the executives of a social media company. If you’re just starting out, you probably only need a landing page, in which case it may cost you between $450 and $750. If you’re a veteran in your industry with a ton of content and services, it might go for a couple of grand.' },
+  { question: 'How long does it take to build a website?',
+    answer: 'Most small business websites take between 2 and 4 weeks once we have what we need. The main factor is content. If you already have your logo, a few photos, and a clear list of services, things move fast. If you need help clarifying messaging or gathering assets, it can take longer, and that’s normal. We keep the process simple so the project does not drag out for months.' },
+  { question: 'What do you need from me to get started?',
+    answer: 'We need your list of services, the cities or areas you serve, and a clear way for customers to contact you. A logo and a few real photos help a lot, even if they are taken on a phone. If you have reviews or testimonials, those are extremely useful for trust. If you do not have any of this yet, we can guide you through it quickly. The goal is progress, not perfection.' },
+  { question: 'Will my website work well on phones?',
+    answer: 'Yes. Most of your customers will visit your site on a phone, so mobile performance is a non-negotiable. Your site should load quickly, keep text readable, and make it easy to call or contact you with one tap. A good mobile layout also keeps people from bouncing immediately. Google also considers mobile usability when deciding what to show.' },
+  { question: 'Can you connect my domain and business email?',
+    answer: 'Yes. If you already own a domain, we can connect it to your website and make sure everything routes correctly. If you want a professional email address using your domain, we can set that up as well. The key is keeping domain ownership in your name so you stay in control. We handle the technical steps so you do not have to. This keeps your brand clean and consistent everywhere online.' },
+  { question: 'Will I be able to update my website later?',
+    answer: 'Yes. You have two paths, and both are clean. You can make small updates yourself with a simple editing setup, or you can send changes to us, and we will handle them. Either way, you are not stuck. Your site should support growth, not become another chore.' },
+  { question: 'Do you set up my Google Business Profile, too?',
+    answer: 'We can. A Google Business Profile is one of the fastest ways to appear in local searches, especially on Maps. A website supports that profile by serving as a trusted destination for Google to send traffic. When the information matches across your site and your profile, it strengthens credibility. This pairing matters a lot for local businesses that rely on calls and appointment requests.' },
+  { question: 'How do I know I won’t pay for a bunch of things I don’t need?',
+    answer: 'We build what your business actually needs to convert customers. That usually means clear messaging, a clean layout, and the right pages to answer customer questions. Many agencies upsell features that look impressive but do nothing to increase sales. We keep the scope focused and explain the purpose of each piece. If a feature does not help you win customers, it does not belong in the build.' },
+];
+---
+<BaseLayout
+  title="Small Business Web Design | Outset Sites"
+  description="Outset Web Design builds websites that give small businesses customers, not headaches: custom sites, hosting and maintenance, and SEO strategy and blogging, at a price that earns more than it costs."
+  faq={faq}
+>
+  <!-- Hero: white, with the old theme's blue glow and device mockup in the
+       bottom right corner. The mockup is a background so the headline and
+       button can sit over its glow on a phone without fighting it. -->
+  <section class="hero relative overflow-hidden border-b border-hairline">
+    <div class="container-page relative grid items-center gap-10 py-16 lg:grid-cols-[1.1fr_1fr] lg:py-24">
+      <div>
+        <h1 class="max-w-2xl text-4xl leading-[1.1] text-slate-500 lg:text-5xl">
+          {TAGLINE}
+        </h1>
+        <div class="mt-10">
+          <Button href="/portfolio/" size="lg">
+            Check Out our Work <Icon name="chevron-right" size={18} />
+          </Button>
+        </div>
+      </div>
+      <div class="hero__art relative mx-auto w-full max-w-md lg:max-w-none">
+        <Image
+          src={deviceMockup}
+          alt="A laptop, desktop monitor and tablet each showing a website Outset built"
+          widths={[400, 600, 800]}
+          sizes="(max-width: 64rem) min(100vw - 3rem, 28rem), 34rem"
+          loading="eager"
+          fetchpriority="high"
+          class="h-auto w-full"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- The problem, from the owner's side -->
+  <section class="bg-surface">
+    <div class="container-page grid items-center gap-10 py-16 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:py-24">
+      <div>
+        <h2 class="section-heading">You Deserve a Website That Works as Hard as You Do</h2>
+        <p class="mt-6 text-lg leading-relaxed text-ink-soft">
+          Most small business owners know they need a website, but feel trapped between overpriced
+          developers and DIY tools that never quite deliver. You’re running a business, not a tech
+          company. You shouldn’t have to spend nights wondering why your competitors are getting
+          clients while your phone stays quiet.
+        </p>
+        <p class="mt-8 text-center text-lg font-bold text-ink lg:text-left">We get it. We’ve been there!</p>
+      </div>
+      <Image
+        src={frustratedOwner}
+        alt="A business owner at a laptop, head in her hands, staring past the screen"
+        widths={[400, 559]}
+        sizes="(max-width: 64rem) calc(100vw - 3rem), 28rem"
+        loading="lazy"
+        class="photo mx-auto h-auto w-full max-w-md"
+      />
+    </div>
+  </section>
+
+  <!-- The real problem -->
+  <section class="bg-brand-600 text-white">
+    <div class="container-page grid items-center gap-10 py-16 lg:grid-cols-[1fr_1.3fr] lg:gap-16 lg:py-24">
+      <Image
+        src={galleryWindow}
+        alt="A man on the street looking in through a gallery window at a party he is not part of"
+        widths={[400, 559]}
+        sizes="(max-width: 64rem) calc(100vw - 3rem), 24rem"
+        loading="lazy"
+        class="photo mx-auto h-auto w-full max-w-md lg:order-first"
+      />
+      <div>
+        <h2 class="section-heading text-white">The Real Problem Most Businesses Face</h2>
+        <div class="mt-6 space-y-5 text-lg leading-relaxed">
+          <p>
+            When your business doesn’t have a website, potential customers can’t find you, even
+            when they’re searching for what you sell. You might post on social media, pay for ads,
+            or try every new marketing trend, but without a stable online base, nothing lasts. Each
+            post or campaign fades once the money stops.
+          </p>
+          <p>
+            A well-built website creates permanence and reliability. It keeps working for you long
+            after you log off. That’s the difference between chasing clients and attracting them.
+            But that’s only if you have a team of web devs who know what they’re doing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The solution -->
+  <section class="bg-paper">
+    <div class="container-page py-16 lg:py-24">
+      <div class="surface-card grid items-center gap-10 p-8 shadow-[var(--shadow-lg)] lg:grid-cols-[1.2fr_1fr] lg:gap-14 lg:p-14">
+        <div>
+          <h2 class="section-heading">The Solution to Your Marketing: a Reliable Website that gets you Customers</h2>
+          <div class="mt-6 space-y-5 text-lg leading-relaxed text-ink-soft">
+            <p>
+              At Outset Web Services, every small business deserves a legitimate online presence,
+              one that earns more than it costs. A good website doesn’t drain your time or wallet.
+              It builds trust, drives traffic, and turns browsers into buyers.
+            </p>
+            <p>
+              We help business owners like you stop wasting effort on marketing that disappears.
+              When your website is built right, your investment keeps paying you back.
+            </p>
+          </div>
+        </div>
+        <Image
+          src={showingClient}
+          alt="Two people at a table showing a client a website on a laptop"
+          widths={[400, 640, 960]}
+          sizes="(max-width: 64rem) calc(100vw - 6rem), 26rem"
+          loading="lazy"
+          class="photo mx-auto h-auto w-full max-w-md"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- The team -->
+  <section class="bg-brand-600 text-white">
+    <div class="container-page py-16 lg:py-24">
+      <h2 class="section-heading text-center text-white">A Small Business Web Team for Small Business Owners</h2>
+      <div class="mx-auto mt-8 max-w-4xl space-y-5 text-lg leading-relaxed">
+        <p>
+          As small business owners ourselves, we’ve felt that same frustration. You see advice
+          everywhere: make TikToks, start a YouTube channel, post every day, and pay for ads on all
+          of them. But ads can only take you so far. Once you pay for them, they’re gone. A
+          reliable, updated website puts equity in your company and always works for you.
+        </p>
+        <p>
+          We know the pressure of growing while keeping costs under control. That’s why we build
+          websites that are affordable, strategic, and designed to help your business grow from
+          day one.
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-10 md:grid-cols-2 lg:gap-16">
+        <li>
+          <Image
+            src={joe}
+            alt="Joe Green"
+            widths={[400, 640, 800]}
+            sizes="(max-width: 48rem) calc(100vw - 3rem), 34rem"
+            loading="lazy"
+            class="photo h-auto w-full"
+          />
+          <p class="mt-6 text-lg leading-relaxed">
+            <strong>Joe Green</strong> is the technical architect behind each Outset site. With a
+            background in IT and years of experience managing web projects, Joe ensures every site
+            runs fast, looks clean, and captures customers, not eyesores.
+          </p>
+        </li>
+        <li>
+          <Image
+            src={marc}
+            alt="Marc Gray"
+            widths={[400, 640, 800]}
+            sizes="(max-width: 48rem) calc(100vw - 3rem), 34rem"
+            loading="lazy"
+            class="photo h-auto w-full"
+          />
+          <p class="mt-6 text-lg leading-relaxed">
+            <strong>Marc Gray</strong> has led a successful small business consulting firm since
+            2019. He focuses on your brand continuity, web copy, and SEO strategy, ensuring your
+            website not only looks good but also performs.
+          </p>
+        </li>
+      </ul>
+      <p class="mt-12 text-center text-lg">
+        Together, we combine technology and strategy to deliver websites that convert your web traffic into revenue.
+      </p>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="bg-surface">
+    <div class="container-page py-16 lg:py-24">
+      <h2 class="section-heading text-center">Our Process for Your Website</h2>
+      <ol class="mt-12 grid gap-10 md:grid-cols-3">
+        {process.map((step) => (
+          <li class="text-center">
+            <Image src={step.icon} alt={step.alt} width={120} height={120} loading="lazy" class="mx-auto h-[120px] w-[120px]" />
+            <h3 class="mt-6 text-lg font-bold text-slate-500">{step.title}</h3>
+            <p class="mt-2 leading-relaxed text-ink-soft">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="mx-auto mt-12 max-w-4xl border-t border-hairline-strong pt-8 text-center text-lg leading-relaxed text-ink-soft">
+        Our data-driven strategies are designed to deliver measurable traffic growth within 60 days.
+        With full transparency, you’ll see exactly how your investment is working for you!
+      </p>
+    </div>
+  </section>
+
+  <!-- Stakes -->
+  <section class="bg-paper">
+    <div class="container-page py-16 lg:py-24">
+      <div class="surface-card mx-auto max-w-4xl p-8 shadow-[var(--shadow-lg)] lg:p-14">
+        <h2 class="section-heading">What’s at Stake For Your Site?</h2>
+        <div class="mt-6 space-y-5 text-lg leading-relaxed text-ink-soft">
+          <p>
+            Every day without a website costs you visibility, leads, and trust. Businesses without
+            one waste money on marketing channels that vanish the moment you stop paying. A website,
+            once built right, becomes a lasting engine for growth.
+          </p>
+          <p>
+            When you invest in your site, every effort you put into your marketing lasts. When you
+            don’t, everything fades.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="bg-brand-600 text-white">
+    <div class="container-page py-16 lg:py-24">
+      <h2 class="section-heading text-center text-white">Web Dev Services</h2>
+      <ul class="mt-12 grid gap-10 md:grid-cols-3">
+        {services.map((s) => (
+          <li class="text-center">
+            <Image src={s.icon} alt={s.alt} width={200} height={200} loading="lazy" class="mx-auto h-[200px] w-[200px]" />
+            <h3 class="mt-6 text-lg font-bold">{s.title}</h3>
+            <p class="mt-2 leading-relaxed text-brand-50">{s.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-paper">
+    <div class="container-page py-16 lg:py-24">
+      <h2 class="section-heading text-center">Frequently Asked Questions</h2>
+      <div class="mx-auto mt-4 max-w-5xl">
+        <FAQ>
+          {faq.map((f) => (
+            <FAQItem q={f.question}>
+              {/* The pricing answer is two paragraphs on the old site; the
+                  break is restored here without duplicating the text. */}
+              {f.answer.split(' If you’re just starting out,').map((part, i) => (
+                <p>{i === 0 ? part : `If you’re just starting out,${part}`}</p>
+              ))}
+            </FAQItem>
+          ))}
+        </FAQ>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="scroll-mt-20 bg-brand-600 text-white">
+    <div class="container-page py-16 lg:py-24">
+      <h2 class="section-heading text-center text-white">Get in Touch Today!</h2>
+      <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div class="text-center">
+          <p class="mx-auto max-w-lg text-lg leading-relaxed">
+            Ready to grow? Drop us a line and one of us will get back to you within 48 hours. No
+            high-pressure sales, just an open, honest look at your needs!
+          </p>
+          <Image
+            src={paperPlane}
+            alt=""
+            widths={[320, 480]}
+            sizes="20rem"
+            loading="lazy"
+            class="mx-auto mt-6 h-auto w-full max-w-[20rem]"
+          />
+        </div>
+        <div>
+          <ContactForm client:visible />
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    /* The old theme's glow: a blue that fades to white well before the
+       middle of the section, so the headline sits on white. */
+    background:
+      radial-gradient(ellipse 60% 85% at 100% 100%, var(--color-brand-400) 0, var(--color-brand-100) 45%, var(--color-paper) 75%);
+    box-shadow: 0 12px 18px -6px rgba(0, 0, 0, 0.18);
+    z-index: 1;
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+interface Props { q: string }
+const { q } = Astro.props;
+---
+<details class="group surface-card overflow-hidden bg-surface">
+  <summary
+    class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-2 [&::-webkit-details-marker]:hidden"
+  >
+    <h3 class="m-0 text-[1.05rem] font-bold text-slate-500">{q}</h3>
+    <span class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-500 text-white transition-transform duration-200 group-open:rotate-45">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+      </svg>
+    </span>
+  </summary>
+  <div class="faq-answer space-y-3 bg-paper px-5 py-5 leading-relaxed text-ink-soft">
+    <slot />
+  </div>
+</details>

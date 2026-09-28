@@ -1,0 +1,21 @@
+---
+/**
+ * Numbered anchor in the references list. It does not link back up: a
+ * number can be cited from several sentences, and a link to only the first
+ * of them is worse than no link.
+ */
+interface Props { n: string | number }
+const { n } = Astro.props;
+---
+<span id={`ref-${n}`} class="ref-num">[{n}]</span>
+<style>
+  .ref-num {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.86em;
+    font-weight: 700;
+    color: var(--color-brand-700);
+    margin-inline-end: 0.35em;
+    scroll-margin-top: 6rem;
+  }
+</style>

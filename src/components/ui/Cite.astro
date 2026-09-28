@@ -1,0 +1,18 @@
+---
+/** Inline citation marker, linked to its entry in the references list. */
+interface Props { n: string | number }
+const { n } = Astro.props;
+---
+<sup class="citation"><a href={`#ref-${n}`} aria-label={`Reference ${n}`}>[{n}]</a></sup>
+<style>
+  .citation {
+    font-family: var(--font-sans);
+    font-size: 0.66em;
+    font-weight: 700;
+    line-height: 0;
+    margin-inline-start: 0.1em;
+    vertical-align: super;
+  }
+  .citation a { color: var(--color-brand-700); text-decoration: none; padding: 0 0.1em; }
+  .citation a:hover { text-decoration: underline; }
+</style>

@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "outset-sites",
+  "compatibility_date": "2026-08-25",
+  "main": "worker/index.ts",
+
+  // The site is static; the Worker exists only for the contact endpoint.
+  // Asset requests are served directly from the edge without invoking it.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    // Only these reach Worker code; everything else is served straight from
+    // the edge. This belongs inside "assets": at the top level wrangler
+    // parses the file but ignores the field, and every route becomes static.
+    "run_worker_first": ["/api/*"]
+  },
+
+  "observability": { "enabled": true }
+
+  // Add the custom domain here once the DNS for outsetsites.com points at
+  // Cloudflare, and nowhere else. Until then the Worker answers only on its
+  // workers.dev address, which is fine for previewing.
+  // "routes": [{ "pattern": "outsetsites.com", "custom_domain": true }]
+}

@@ -1,0 +1,14 @@
+---
+import { BUTTON_BASE, BUTTON_SIZES, BUTTON_VARIANTS } from '../../lib/button-styles';
+
+interface Props {
+  href: string;
+  variant?: keyof typeof BUTTON_VARIANTS;
+  size?: keyof typeof BUTTON_SIZES;
+  class?: string;
+}
+const { href, variant = 'primary', size = 'md', class: cls = '' } = Astro.props;
+---
+<a href={href} class={`${BUTTON_BASE} ${BUTTON_SIZES[size]} ${BUTTON_VARIANTS[variant]} ${cls}`}>
+  <slot />
+</a>

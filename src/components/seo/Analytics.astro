@@ -1,0 +1,25 @@
+---
+/**
+ * Google Analytics, loaded only on the live hostname and only once an ID
+ * exists in src/lib/analytics.ts. The gate is client-side because the site
+ * is static: a preview and production are served the same HTML, so the host
+ * can only be known in the browser.
+ */
+import { GA_MEASUREMENT_IDS, ANALYTICS_HOST } from '../../lib/analytics';
+const ids = [...GA_MEASUREMENT_IDS];
+---
+{ids.length > 0 && (
+  <script is:inline define:vars={{ ids, host: ANALYTICS_HOST }}>
+    if (location.hostname === host || location.hostname === 'www.' + host) {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      for (const id of ids) gtag('config', id);
+      const tag = document.createElement('script');
+      tag.async = true;
+      tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + ids[0];
+      document.head.appendChild(tag);
+    }
+  </script>
+)}

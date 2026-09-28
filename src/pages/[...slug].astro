@@ -1,0 +1,36 @@
+---
+import { render } from 'astro:content';
+import PostLayout from '../layouts/PostLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Figure from '../components/ui/Figure.astro';
+import Video from '../components/ui/Video.astro';
+import Cite from '../components/ui/Cite.astro';
+import RefNum from '../components/ui/RefNum.astro';
+import Table from '../components/ui/Table.astro';
+import { getPosts, type Post } from '../lib/blog';
+import { relatedPosts, readingTime } from '../lib/post-utils';
+
+/**
+ * Posts live at flat root URLs, preserving the WordPress permalinks.
+ * Explicit routes (/blog/, /portfolio/) take precedence over this catch-all.
+ */
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, all: posts },
+  }));
+}
+
+interface Props { post: Post; all: Post[] }
+const { post, all } = Astro.props;
+const { Content, headings } = await render(post);
+---
+<PostLayout
+  post={post}
+  related={relatedPosts(post, all, 3)}
+  minutes={readingTime(post.body ?? '')}
+  headings={headings}
+>
+  <Content components={{ Figure, Video, Button, Cite, RefNum, table: Table }} />
+</PostLayout>

@@ -1,0 +1,87 @@
+---
+/**
+ * Contents nav generated from the article's own headings, so it cannot go
+ * stale. The WordPress guide carried a hand-typed one with a "Back to Table
+ * of Contents" link under every heading; this replaces both.
+ */
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  /** Below this many top-level sections an article is easier to just read. */
+  minSections?: number;
+}
+const { headings, minSections = 5 } = Astro.props;
+
+const usable = headings
+  .filter((h) => h.depth === 2 || h.depth === 3)
+  .filter((h) => h.text.trim() && h.slug);
+const MAX_ITEMS = 24;
+const items = usable.length > MAX_ITEMS ? usable.filter((h) => h.depth === 2) : usable;
+const topLevel = usable.filter((h) => h.depth === 2).length;
+const show = topLevel >= minSections;
+---
+{show && (
+  <details class="toc">
+    <summary>
+      <span class="toc__label">Contents</span>
+      <span class="toc__count">{topLevel} sections</span>
+      <svg class="toc__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </summary>
+    <nav aria-label="Article contents">
+      <ol class="toc__list">
+        {items.map((h) => (
+          <li class={h.depth === 3 ? 'toc__item toc__item--sub' : 'toc__item'}>
+            <a href={`#${h.slug}`}>{h.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </details>
+)}
+
+<style>
+  .toc {
+    max-width: 42rem;
+    margin: 2.5rem auto 0;
+    border: 1px solid var(--color-hairline);
+    border-radius: 10px;
+    background: var(--color-surface);
+    overflow: hidden;
+    font-family: var(--font-sans);
+  }
+  .toc summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.15rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .toc summary::-webkit-details-marker { display: none; }
+  .toc__label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--color-brand-700);
+  }
+  .toc__count { margin-left: auto; font-size: 0.8125rem; color: var(--color-muted); }
+  .toc__chevron { color: var(--color-muted); transition: transform 0.2s ease; flex: none; }
+  .toc[open] .toc__chevron { transform: rotate(180deg); }
+  .toc nav { padding: 0 1.15rem 1rem; }
+  .toc__list { list-style: none; margin: 0; padding: 0; }
+  .toc__item { margin: 0; line-height: 1.4; }
+  .toc__item a {
+    display: block;
+    padding: 0.45rem 0 0.45rem 0.85rem;
+    border-left: 2px solid var(--color-hairline);
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  .toc__item--sub a { padding-left: 1.75rem; font-size: 0.84rem; }
+  .toc__item a:hover { color: var(--color-brand-700); border-left-color: var(--color-brand-300); }
+</style>

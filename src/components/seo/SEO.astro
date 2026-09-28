@@ -1,0 +1,56 @@
+---
+import { SITE_NAME } from '../../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Absolute or site-relative URL of the social share image. */
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  noindex?: boolean;
+}
+const {
+  title, description, image, type = 'website',
+  publishedTime, modifiedTime, noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+// Every page gets a share image; without one, links posted anywhere social
+// render as a bare grey card.
+const ogImage = new URL(image ?? '/social-card.jpg', Astro.site).href;
+
+/*
+ * Brand the title only where it still fits. A search result shows roughly 60
+ * characters, and the article titles run to the schema's 60-character limit
+ * on their own. The suffix shortens, then drops.
+ */
+const LIMIT = 60;
+const fullTitle = title.includes(SITE_NAME)
+  ? title
+  : title.length + SITE_NAME.length + 3 <= LIMIT
+    ? `${title} | ${SITE_NAME}`
+    : title.length + 9 <= LIMIT
+      ? `${title} | Outset`
+      : title;
+---
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={description} />
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />

@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostGrid from '../../components/ui/PostGrid.astro';
+import { getPosts, getCategories, type Post } from '../../lib/blog';
+import { categoryLabel } from '../../lib/post-utils';
+
+/** One static page per category. No client-side filtering, no JavaScript. */
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return getCategories(posts).map((category) => ({
+    params: { category },
+    props: { posts: posts.filter((p) => p.data.category === category), category },
+  }));
+}
+
+interface Props { posts: Post[]; category: string }
+const { posts, category } = Astro.props;
+const label = categoryLabel(category);
+---
+<BaseLayout
+  title={`${label} for Small Businesses`}
+  description={`${posts.length} ${posts.length === 1 ? 'post' : 'posts'} filed under ${label.toLowerCase()} from Outset Web Design: practical advice for small business owners who want their website to bring in customers.`}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Blog', url: '/blog/' },
+    { name: label, url: `/category/${category}/` },
+  ]}
+>
+  <div class="container-page py-12 lg:py-16">
+    <nav aria-label="Breadcrumb" class="mb-6 text-sm text-muted">
+      <ol class="flex flex-wrap items-center gap-1.5">
+        <li><a href="/" class="no-underline hover:text-brand-700">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/blog/" class="no-underline hover:text-brand-700">Blog</a></li>
+      </ol>
+    </nav>
+    <h1 class="text-4xl lg:text-5xl">{label}</h1>
+    <p class="mt-4 text-lg text-ink-soft">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+    <div class="mt-10"><PostGrid posts={posts} /></div>
+  </div>
+</BaseLayout>

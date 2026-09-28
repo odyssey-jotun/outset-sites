@@ -1,0 +1,6 @@
+# Outset Sites
+
+User-agent: *
+Allow: /
+
+Sitemap: https://outsetsites.com/sitemap-index.xml

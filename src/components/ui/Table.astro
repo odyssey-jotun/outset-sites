@@ -1,0 +1,25 @@
+---
+/**
+ * Tables wrapped in their own scroll container, so a wide table scrolls
+ * inside itself rather than pushing the page wider than a phone.
+ */
+---
+<div class="table-scroll">
+  <table><slot /></table>
+</div>
+<style>
+  .table-scroll {
+    margin-block: 2em;
+    overflow-x: auto;
+    border: 1px solid var(--color-hairline);
+    border-radius: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-scroll table {
+    width: 100%;
+    min-width: 26rem;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+</style>
